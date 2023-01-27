@@ -12,6 +12,7 @@ class Reserva extends BaseController
         $this->load->model('servicio_model');
         $this->load->model('ubigeo_model');
         $this->load->model('usuario_model');
+        $this->load->model('reservacion_model');
         $this->load->library('util');
     }
 
@@ -62,7 +63,30 @@ class Reserva extends BaseController
             $info["estado"] = 1;
             $this->usuario_model->insert($info);
         }
-        //TODO: registrar reserva
+        //registrar reserva
+        $recuento_reservacion = $this->reservacion_model->getRecuento();
+        $cod_reservacion = $this->util->generar_codigo_aleatorio('RE', 35, $recuento_reservacion);
+        $servicio = $this->servicio_model->get($cod_se);
+
+        $info = array(
+            "cod_reservacion" => 0,
+            "cod_servicio" => 0,
+            "cod_ciente" => 0,
+            "cod_usuario" => 0,
+            "fecha_reserva" => 0,
+            "hora_reserva" => 0,
+            "nro_personas" => 0,
+            "tipo_costo" => 0,
+            "costo_servicio" => 0,
+            "subtotal" => 0,
+            "igv" => 0,
+            "total" => 0,
+            "estado" => 1,
+            "fecha_reg" => "",
+        );
+
+        $this->reservacion_model->insert($info);
+
 
         $this->cart->destroy();
         echo json_encode(array(
