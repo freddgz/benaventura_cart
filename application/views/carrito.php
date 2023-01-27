@@ -19,6 +19,7 @@
                             $cod_servicio = $row['id'];
                             $rowid = $row['rowid'];
                             $subtotal = $row['subtotal'];
+                            $item = $row['item'];
                             $total += $subtotal;
                         ?>
                             <div class="col-12" id="li_cesta_<?= $rowid; ?>">
@@ -39,7 +40,23 @@
                                         <div class="col-md">
                                             <p class="text-14 lh-14 mb-5">6+ hours</p>
                                             <h3 class="text-18 lh-16 fw-500"><?= ucfirst($row['name']); ?></h3>
+                                            <p class="text-14 lh-14 mt-5"><?= ucfirst(mb_strtolower($this->util->limitar_cadena($item['descripcion'], 90, "..ver mas"))); ?></p>
 
+                                            <div class="text-14 lh-15 fw-500 mt-20"><i class="icon-calendar text-12"></i>
+                                                <?= $this->util->obtener_fecha_format_text($item['fecha_reserva']); ?>
+                                            </div>
+                                            <?php if ($item['ninos_menores'] !== '0') { ?>
+                                                <div class="text-14 lh-15 fw-500"><?php echo $item['ninos_menores']; ?> Infantes</div>
+                                            <?php } ?>
+                                            <?php if ($item['ninos_mayores'] !== '0') { ?>
+                                                <div class="text-14 lh-15 fw-500"><?php echo $item['ninos_mayores']; ?> Niños</div>
+                                            <?php } ?>
+                                            <?php if ($item['adultos'] !== '0') { ?>
+                                                <div class="text-14 lh-15 fw-500"><?php echo $item['adultos']; ?> Adultos</div>
+                                            <?php } ?>
+                                            <?php if ($item['adultos_mayores'] !== '0') { ?>
+                                                <div class="text-14 lh-15 fw-500"><?php echo $item['adultos_mayores']; ?> Adultos Mayores</div>
+                                            <?php } ?>
                                             <div class="text-14 text-green-2 fw-500 lh-15 mt-5">Free cancellation</div>
                                         </div>
 
@@ -140,8 +157,19 @@
     </div>
 </section>
 
+<div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <button type="button" class="btn-close float-right" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body cont_edit">
+
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
+        let myModal = new bootstrap.Modal(document.getElementById("modalServicio"), {});
         $('#btnBorrar').on('click', function() {
             $.ajax({
                 type: 'POST',
@@ -153,15 +181,124 @@
             });
         });
         $('.btnEditar').on('click', function() {
-            // $.ajax({
-            //     type: 'POST',
-            //     url: baseURL + 'carrito/deleteCart',
-            //     // dataType: 'json',
-            //     success: function(res) {
-            //         location.reload();
-            //     }
-            // });
+            let rowid = $(this).data('rowid');
+            $.ajax({
+                type: 'POST',
+                url: baseURL + 'ajax/servicio/showEditCart',
+                // dataType: 'json',
+                data: {
+                    rowid: rowid,
+                },
+                success: function(res) {
+                    res = JSON.parse(res);
+                    console.log('carrito/showEditCart', res);
+                    $(".cont_edit").html(res.html).fadeIn("slow");
+                    myModal.show();
+
+                    $('#fecha_dispon').daterangepicker({
+                        "singleDatePicker": true,
+                        "autoApply": true,
+                        "locale": {
+                            "format": "MMMM D, Y",
+                            "separator": " - ",
+                            "applyLabel": "Apply",
+                            "cancelLabel": "Cancel",
+                            "fromLabel": "From",
+                            "toLabel": "To",
+                            "customRangeLabel": "Custom",
+                            "weekLabel": "W",
+                            "daysOfWeek": [
+                                "Do",
+                                "Lu",
+                                "Ma",
+                                "Mi",
+                                "Ju",
+                                "Vi",
+                                "Sa"
+                            ],
+                            "monthNames": [
+                                "Enero",
+                                "Febrero",
+                                "Marzo",
+                                "Abril",
+                                "Mayo",
+                                "Junio",
+                                "Julio",
+                                "Agosto",
+                                "Setiembre",
+                                "Octubre",
+                                "Noviembre",
+                                "Diciembre"
+                            ],
+                            "firstDay": 1
+                        },
+                        "opens": "center"
+                    }, function(start, end, label) {
+                        console.log('New date range selected: ' + start.format('MMMM D, YYYY') + ' to ' + end.format('MMMM D, YYYY') + ' (predefined range: ' + label + ')');
+                    });
+
+
+                    $('#form_reserva').submit(function(e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: `${baseURL}ajax/servicio/disponibilidad`,
+                            type: 'POST',
+                            // dataType: 'json',
+                            data: $('#form_reserva').serialize(),
+                            // data: {
+                            //     'cod_servicio': $('#cod_servicio').val(),
+                            // }
+                        }).always(function(res) {
+                            res = JSON.parse(res);
+                            console.log("ajax/servicio/disponibilidad", res);
+                            if (res.status == true) {
+                                if (res.cartitem_updated == true) {
+                                    location.reload();
+                                } else {
+
+                                    swal({
+                                        title: "Error al actualizar el servicio",
+                                        animation: false,
+                                        type: 'info',
+                                        customClass: 'animated tada',
+                                        padding: '2em'
+                                    })
+                                }
+                                // let personas = "";
+                                // if (res.data.num_ninos_menores >= 1) personas += res.data.num_ninos_menores + " Niños infantes /";
+                                // if (res.data.num_ninos_mayores >= 1) personas += res.data.num_ninos_mayores + " Niños /";
+                                // if (res.data.num_adultos >= 1) personas += res.data.num_adultos + " Adultos /";
+                                // if (res.data.num_adultos_mayores >= 1) personas += res.data.num_adultos_mayores + " Adultos mayores /";
+                                // $("#div-fecha").html("Fecha: " + res.data.fecha_reserva);
+                                // $("#div-personas").html("Personas: " + personas);
+                                // $("#span-total").html("$ " + res.data.total);
+                                // $("#span-tipo").html((res.data.id_costo == 1) ? `/ Por ${res.data.numero_personas} persona` : "/ Por Paquete");
+                                // // var myModal = new bootstrap.Modal(document.getElementById("myModal"), {});
+                                // myServicio.total = res.data.total;
+                                // myServicio.personas = res.data.numero_personas;
+                                // myServicio.fecha_reserva = res.data.fecha_reserva;
+                                // myServicio.ninos_menores = parseInt(res.data.num_ninos_menores);
+                                // myServicio.ninos_mayores = parseInt(res.data.num_ninos_mayores);
+                                // myServicio.adultos = parseInt(res.data.num_adultos);
+                                // myServicio.adultos_mayores = parseInt(res.data.num_adultos_mayores);
+                                // myModal.show()
+                            } else {
+                                swal({
+                                    title: res.message,
+                                    animation: false,
+                                    type: 'info',
+                                    customClass: 'animated tada',
+                                    padding: '2em'
+                                })
+                            }
+                        });
+
+                        return false;
+                    });
+                }
+            });
         });
+
         $('.btnEliminar').on('click', function() {
             let rowid = $(this).data('rowid');
             $.ajax({
@@ -177,5 +314,6 @@
                 }
             });
         });
+
     });
 </script>

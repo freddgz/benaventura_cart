@@ -11,6 +11,7 @@ $route['detalleTour/(:any)'] = 'servicio/servicio/$1';
 $route['loginMe'] = 'login/loginMe';
 $route['dashboard'] = 'user';
 $route['logout'] = 'user/logout';
+$route['registro'] = 'login/registro';
 
 /**Seguridad */
 $route['usuario'] = 'Usuario';

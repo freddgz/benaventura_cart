@@ -99,6 +99,12 @@ define('PAGE_SIZE',                                10);
 define('NUM_ITEMS_BY_PAGE',                                999999);
 define('SERVER_IMG', "http://localhost/jim/benaventura_cart/assets/servicios/");
 
+/**ENCRIPTADO */
+define('METHOD',                                'AES-256-CBC');
+define('SECRET_KEY',                                '10$2020@');
+define('SECRET_IV',                                '100520');
+
+
 /**PREFIJOS */
 define('PREFIX_CAT', "cat_");
 define('ARRAY_DURACION', array(

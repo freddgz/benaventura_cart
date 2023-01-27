@@ -9,30 +9,14 @@ class Login_model extends CI_Model
      */
     function loginMe($email, $password)
     {
-        $this->db->select('us.idusuario,
-                            us.usuario,
-                            us.nombres,
-                            us.apellidos,
-                            us.clave,
-                            us.idrol,
-                            us.foto,
-                            ro.nombre as rol');
-        $this->db->from('usuario as us');
-        $this->db->join('rol as ro', 'ro.idrol = us.idrol');
-        $this->db->where('us.usuario', $email);
-        $this->db->where('us.estado', 1);
-        $query = $this->db->get();
-
-        $user = $query->row();
-
-        if (!empty($user)) {
-            if (verifyHashedPassword($password, $user->clave)) {
-                return $user;
-            } else {
-                return array();
-            }
-        } else {
-            return array();
+        $query = "SELECT 
+                * 
+                FROM usuarios 
+                 where email='$email' and contrasena='$password'";
+                //  where cod_usuario='US67208600822'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->row();
         }
     }
 

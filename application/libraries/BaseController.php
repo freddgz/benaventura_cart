@@ -10,7 +10,7 @@
 class BaseController extends CI_Controller
 {
 	protected $id_rol = '';
-	protected $id_usuario = '';
+	protected $cod_usuario = '';
 	protected $usuario = '';
 	protected $rol = '';
 	protected $global = array();
@@ -46,15 +46,13 @@ class BaseController extends CI_Controller
 		if (!isset($isLoggedIn) || $isLoggedIn != TRUE) {
 			redirect('login');
 		} else {
-			$this->id_usuario = $this->session->userdata('idusuario');
+			$this->cod_usuario = $this->session->userdata('cod_usuario');
 			$this->usuario = $this->session->userdata('usuario');
 
-			$this->global['user_id'] = $this->session->userdata(('idusuario'));
-			$this->global['user_name'] = $this->usuario;
-			$this->global['role_id'] = $this->session->userdata(('idrol'));
-			$this->global['role_name'] = $this->session->userdata(('rol'));
-			$this->global['menus'] = $this->session->userdata('menus');
-			$this->global['user_photo'] = $this->session->userdata('foto');
+			$this->global['cod_usuario'] = $this->cod_usuario;
+			$this->global['nombre'] = $this->session->userdata(('nombre'));
+			$this->global['usuario'] = $this->usuario;
+			$this->global['tipo_usuario'] = $this->session->userdata(('tipo_usuario'));
 			$url_php = $this->uri->segment(1);
 			// $menu_current = $this->menu_model->getByUrl($url_php);
 			// $this->global['current_menu'] =  $menu_current;
@@ -94,7 +92,7 @@ class BaseController extends CI_Controller
 	{
 		$this->session->sess_destroy();
 
-		redirect('login');
+		redirect('/');
 	}
 
 	/**

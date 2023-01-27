@@ -126,6 +126,52 @@ class Util
         return $result;
     }
 
+    public static function encryption($string)
+    {
+        $output = FALSE;
+        $key = hash('sha256', SECRET_KEY);
+        $iv = substr(hash('sha256', SECRET_IV), 0, 16);
+        $output = openssl_encrypt($string, METHOD, $key, 0, $iv);
+        $output = base64_encode($output);
+        return $output;
+    }
+    public static  function decryption($string)
+    {
+        $key = hash('sha256', SECRET_KEY);
+        $iv = substr(hash('sha256', SECRET_IV), 0, 16);
+        $output = openssl_decrypt(base64_decode($string), METHOD, $key, 0, $iv);
+        return $output;
+    }
+
+    public function generar_codigo_aleatorio($letra, $longitud, $numero)
+    {
+        for ($i = 1; $i <= $longitud; $i++) {
+            $numero = rand(0, 9);
+            $letra .= $numero;
+        }
+        return $letra . $numero; // te dejo, ve ok dibugueando cada controlador que sea la primer linea, despues se la borras, bye ok bro gracias
+    }
+
+    protected function limpiar_cadena($cadena)
+    {
+        $cadena = trim($cadena);
+        $cadena = stripcslashes($cadena);
+        $cadena = str_ireplace("<script>", "", $cadena);
+        $cadena = str_ireplace("</script>", "", $cadena);
+        $cadena = str_ireplace("</script type=", "", $cadena);
+        $cadena = str_ireplace("</script src=", "", $cadena);
+        $cadena = str_ireplace("SELECT * FROM", "", $cadena);
+        $cadena = str_ireplace("DELETE  FROM", "", $cadena);
+        $cadena = str_ireplace("INSERT  INTO", "", $cadena);
+        $cadena = str_ireplace("INSERT  INTO", "", $cadena);
+        $cadena = str_ireplace("--", "", $cadena);
+        $cadena = str_ireplace("^", "", $cadena);
+        $cadena = str_ireplace("[", "", $cadena);
+        $cadena = str_ireplace("]", "", $cadena);
+        $cadena = str_ireplace("==", "", $cadena);
+        $cadena = str_ireplace("'", "", $cadena);
+        return $cadena;
+    }
     public static function obtener_fecha_format($fecha)
     {
         $fecha_inicio = explode(",", $fecha);
@@ -195,6 +241,67 @@ class Util
         $oldDate = strtotime($cadena_fecha);
         $newDate = date('Y-m-d', $oldDate);
         return $newDate;
+    }
+    public static function obtener_fecha_format_text($fecha)
+    {
+        $fecha_inicio = explode("-", $fecha);
+
+        $meses  = ltrim($fecha_inicio[1]);
+        switch ($meses) {
+            case 01:
+                $monthNameSpanish = 'Enero';
+                break;
+
+            case 02:
+                $monthNameSpanish = 'Febrero';
+                break;
+
+            case 03:
+                $monthNameSpanish = 'Marzo';
+                break;
+
+            case 04:
+                $monthNameSpanish = 'Abril';
+                break;
+
+            case 05:
+                $monthNameSpanish = 'Mayo';
+                break;
+
+            case 06:
+                $monthNameSpanish = 'Junio';
+                break;
+
+            case 07:
+
+                $monthNameSpanish = 'Julio';
+                break;
+
+            case 8:
+
+                $monthNameSpanish = 'Agosto';
+                break;
+
+            case 9:
+                $monthNameSpanish = 'Septiembre';
+                break;
+
+
+            case 10:
+                $monthNameSpanish = 'Octubre';
+                break;
+
+            case 11:
+                $monthNameSpanish = 'Noviembre';
+                break;
+
+            case 12:
+                $monthNameSpanish = 'Diciembre';
+                break;
+                //...
+        }
+        $cadena_fecha = $monthNameSpanish . " " . $fecha_inicio[2] . ", " . $fecha_inicio[0];
+        return $cadena_fecha;
     }
     public static function limitar_cadena($cadena, $limite, $sufijo)
     {

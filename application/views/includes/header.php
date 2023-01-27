@@ -135,25 +135,22 @@
                 <a href="login.html" class="button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white">AGENCIAS
                   VENAVENTURA</a>
                 <?php
-                if (isset($_SESSION['us_name_user']) && $_SESSION['us_name_user'] !== "") {
+                if ($this->session->userdata('isLoggedIn') !== null) {
+                  $nombre = $this->session->userdata(('nombre'));
                 ?>
                   <a href="javascript:;" class="dropdown-nav-link dropdown-toggle d-flex align-items-center " id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="icon-user mr-3 ml-20 text-30"></i>
                     <span class="d-inline-block font-size-14">
-                      <?= " " . $_SESSION['us_name_user']; ?></span>
+                      <?= " " . $nombre ?></span>
                   </a>
                   <div id="setingUser" class="dropdown-menu dropdown-unfold dropdown-menu-right mt-0" aria-labelledby="dropdownMenuButton2">
                     <a class="dropdown-item" href="#">My Perfil</a>
                     <a class="dropdown-item" href="#">Mis Reservasiones</a>
-                    <a class="dropdown-item exit_sesion" href="<?= $token; ?>">Salir</a>
+                    <a class="dropdown-item exit_sesion" href="<?= base_url() ?>/login/logout">Salir</a>
                   </div>
-                <?php
-                } else {
-                ?>
+                <?php } else { ?>
                   <a href="<?= base_url() ?>login" class="items-center px-10 fw-400 text-30 icon-user  ml-20"></a>
-                <?php
-                }
-                ?>
+                <?php } ?>
                 <a href="signup.html" class="items-center px-10 fw-400 text-30  -outline-blue-1 text-blue-1 ml-20" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
                   <img src="<?= base_url() ?>assets/img/icon/cart-plus-solid.svg" alt="" width="30" class="mr-15">
                   <span class="text-15 num_censta" style="position: absolute;
@@ -217,7 +214,7 @@
                           <a class="button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white" href="<?= base_url(); ?>carrito">
                             Ver Carrito
                           </a>
-                          <a class="button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20" href="<?= base_url(); ?>reservas">
+                          <a class="button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20" href="<?= base_url(); ?>reserva">
                             Reservar
                           </a>
                         </div>
@@ -234,29 +231,21 @@
                 <?php
                 if ($this->session->userdata('isLoggedIn') !== null) {
                 ?>
-                  <div>
-                    <a href="javascript:;" class="dropdown-nav-link dropdown-toggle d-flex align-items-center " id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="icon-user text-30"></i>
-                      <span class="d-inline-block font-size-14"></span>
-                    </a>
-                    <div id="setingUser" class="dropdown-menu dropdown-unfold dropdown-menu-right mt-0" aria-labelledby="dropdownMenuButton2">
-                      <a class="dropdown-item" href="#">My Perfil</a>
-                      <a class="dropdown-item" href="#">Mis Reservasiones</a>
-                      <a class="dropdown-item exit_sesion" href="<?= $token; ?>">Salir</a>
-                    </div>
+                  <a href="javascript:;" class="dropdown-nav-link dropdown-toggle d-flex align-items-center " id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="icon-user text-30"></i>
+                    <span class="d-inline-block font-size-14"></span>
+                  </a>
+                  <div id="setingUser" class="dropdown-menu dropdown-unfold dropdown-menu-right mt-0" aria-labelledby="dropdownMenuButton2">
+                    <a class="dropdown-item" href="#">My Perfil</a>
+                    <a class="dropdown-item" href="#">Mis Reservasiones</a>
+                    <a class="dropdown-item exit_sesion" href="<?= "token"; ?>">Salir</a>
                   </div>
-                <?php
-                } else {
-                ?>
-                  <div><a href="<?= base_url() ?>login" class="items-center fw-400 text-30 icon-user"></a>
-                  </div>
-                <?php
-                }
-                ?>
-                <div>
-                  <a href="signup.html" class="items-center fw-400 text-30  -outline-blue-1 text-blue-1" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= base_url() ?>assets/img/icon/cart-plus-solid.svg" alt="" width="30">
-                    <span class="text-15 num_censta" style="position: absolute;
+                <?php } else { ?>
+                  <a href="<?= base_url() ?>login" class="items-center fw-400 text-30 icon-user"></a>
+                <?php } ?>
+                <a href="signup.html" class="items-center fw-400 text-30  -outline-blue-1 text-blue-1" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="<?= base_url() ?>assets/img/icon/cart-plus-solid.svg" alt="" width="30">
+                  <span class="text-15 num_censta" style="position: absolute;
                                 top: 15px;
                                 right: 40px;
                                 height: 19px;
@@ -266,70 +255,69 @@
                                 border-radius: 50%;
                                 color: #fff;
                                 background-color: #f8538d;"><?= sizeof($this->cart->contents()) ?></span> </a>
-                  <style>
-                    .cart_cest {
-                      width: 500px;
-                    }
-                  </style>
-                  <ul class="dropdown-menu cart_cest" aria-labelledby="dropdownMenuButton1">
-                    <div class="card cont-cesta " style="border: none;">
-                      <!-- Header -->
-                      <div class="card-header py-3 px-5 bg-white">
-                        <span class="font-weight-semi-bold">Tu Cesta</span>
-                      </div>
-                      <!-- End Header -->
+                <style>
+                  .cart_cest {
+                    width: 500px;
+                  }
+                </style>
+                <ul class="dropdown-menu cart_cest" aria-labelledby="dropdownMenuButton1">
+                  <div class="card cont-cesta " style="border: none;">
+                    <!-- Header -->
+                    <div class="card-header py-3 px-5 bg-white">
+                      <span class="font-weight-semi-bold">Tu Cesta</span>
+                    </div>
+                    <!-- End Header -->
 
-                      <?php if (!empty($this->cart->contents())) : ?>
+                    <?php if (!empty($this->cart->contents())) : ?>
 
-                        <!-- Body -->
-                        <div class="card-body p-0">
-                          <?php
-                          $total = 0;
-                          foreach ($this->cart->contents() as $item) :
-                            $precio = $item['subtotal'];
-                            $total += $precio;
-                          ?>
-                            <div class="px-2 px-md-3 py-2 py-md-1">
-                              <div class="media p-2 p-md-3 row">
-                                <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3">
-                                  <!-- <img class="img-fluid rounded-pill" src="<?php echo SERVER_IMG; ?>portada/<?php echo $ces['img_portada']; ?>" alt="Image Description"> -->
+                      <!-- Body -->
+                      <div class="card-body p-0">
+                        <?php
+                        $total = 0;
+                        foreach ($this->cart->contents() as $item) :
+                          $precio = $item['subtotal'];
+                          $total += $precio;
+                        ?>
+                          <div class="px-2 px-md-3 py-2 py-md-1">
+                            <div class="media p-2 p-md-3 row">
+                              <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3">
+                                <!-- <img class="img-fluid rounded-pill" src="<?php echo SERVER_IMG; ?>portada/<?php echo $ces['img_portada']; ?>" alt="Image Description"> -->
+                              </div>
+                              <div class=" col-9 media-body position-relative pl-md-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
+                                  <span class="d-block text-dark font-weight-bold"><?php echo ucfirst($item['name']); ?></span>
+                                  <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
+                                    <i class="icon-trash"></i>
+                                  </button>
                                 </div>
-                                <div class=" col-9 media-body position-relative pl-md-1">
-                                  <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
-                                    <span class="d-block text-dark font-weight-bold"><?php echo ucfirst($item['name']); ?></span>
-                                    <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
-                                      <i class="icon-trash"></i>
-                                    </button>
-                                  </div>
-                                  <span class="d-block text-gray-1">Precio $ <?php echo $precio; ?> </span>
-                                </div>
+                                <span class="d-block text-gray-1">Precio $ <?php echo $precio; ?> </span>
                               </div>
                             </div>
-                          <?php endforeach; ?>
-                        </div>
-                        <!-- End Body -->
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                      <!-- End Body -->
 
-                        <!-- Footer -->
-                        <div class="card-footer border-0 p-3 px-md-5 py-md-4">
-                          <div class="mb-4 pb-md-1">
-                            <span class="d-block font-weight-semi-bold">Subtotal: $ <?php echo $total; ?></span>
-                          </div>
-                          <div class="d-flex button-inline-group-md mb-1">
-                            <a class="button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white" href="<?= base_url(); ?>carrito">
-                              Ver Carrito
-                            </a>
-                            <a class="button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20" href="<?= base_url(); ?>reservas">
-                              Reservar
-                            </a>
-                          </div>
+                      <!-- Footer -->
+                      <div class="card-footer border-0 p-3 px-md-5 py-md-4">
+                        <div class="mb-4 pb-md-1">
+                          <span class="d-block font-weight-semi-bold">Subtotal: $ <?php echo $total; ?></span>
                         </div>
-                        <!-- End Footer -->
-                      <?php else : ?>
-                        <div class="empty"></div>
-                      <?php endif; ?>
-                    </div>
-                  </ul>
-                </div>
+                        <div class="d-flex button-inline-group-md mb-1">
+                          <a class="button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white" href="<?= base_url(); ?>carrito">
+                            Ver Carrito
+                          </a>
+                          <a class="button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20" href="<?= base_url(); ?>reserva">
+                            Reservar
+                          </a>
+                        </div>
+                      </div>
+                      <!-- End Footer -->
+                    <?php else : ?>
+                      <div class="empty"></div>
+                    <?php endif; ?>
+                  </div>
+                </ul>
                 <div><button class="d-flex items-center icon-menu text-20" data-x-click="header, header-logo, header-mobile-icons, mobile-menu"></button></div>
               </div>
             </div>

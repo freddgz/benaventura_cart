@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+require APPPATH . '/libraries/BaseController.php';
 
-class Login extends CI_Controller
+class Login extends BaseController
 {
     /**
      * This is default constructor of the class
@@ -9,8 +10,7 @@ class Login extends CI_Controller
     {
         parent::__construct();
         $this->load->model('login_model');
-        $this->load->model('rol_model');
-        $this->load->model('menu_model');
+        $this->load->library('util');
     }
 
     /**
@@ -18,7 +18,15 @@ class Login extends CI_Controller
      */
     public function index()
     {
-        $this->isLoggedIn();
+        //$this->isLoggedIn();
+        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->loadViews("login", $this->global, "", NULL);
+    }
+    public function registro()
+    {
+        //$this->isLoggedIn();
+        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->loadViews("registro", $this->global, "", NULL);
     }
 
     /**
@@ -41,49 +49,56 @@ class Login extends CI_Controller
      */
     public function loginMe()
     {
-        $this->load->library('form_validation');
+        // $this->load->library('form_validation');
 
-        //$this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[128]|trim');
-        $this->form_validation->set_rules('clave', 'Password', 'required|max_length[32]');
+        // //$this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[128]|trim');
+        // $this->form_validation->set_rules('clave', 'Password', 'required|max_length[32]');
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->index();
+        // if ($this->form_validation->run() == FALSE) {
+        //     $this->index();
+        // } else {
+        $usuario = strtolower($this->security->xss_clean($this->input->post('email')));
+        $password = $this->input->post('password');
+        $password = $this->util->encryption($password);
+
+
+        // echo json_encode(array(
+        //     "status" => false,
+        //     "message" => $this->util->decryption("bGxGeFJRdE1CK3FpLzJDTnJhUU9sdz09"),
+        // ));
+        // return;
+        $result = $this->login_model->loginMe($usuario, $password);
+
+        if (!empty($result)) {
+
+            $sessionArray = array(
+                'cod_usuario' => $result->cod_usuario,
+                'nombre' => $result->nombre,
+                'usuario' => $result->nombre . " " . $result->apellido,
+                'tipo_usuario' => $result->tipo_usurio,
+                'isLoggedIn' => TRUE,
+            );
+            $this->session->set_userdata($sessionArray);
+
+            //unset($sessionArray['idusuario'], $sessionArray['isLoggedIn'], $sessionArray['lastLogin']);
+
+            //$loginInfo = array("idusuario" => $result->idusuario, "usuario" => $result->usuario, "machineIp" => $_SERVER['REMOTE_ADDR'], "userAgent" => getBrowserAgent(), "agentString" => $this->agent->agent_string(), "platform" => $this->agent->platform());
+            //$this->login_model->lastLogin($loginInfo);
+
+            // redirect('/');
+            echo json_encode(array(
+                "status" => true,
+                "message" => "",
+            ));
         } else {
-            $usuario = strtolower($this->security->xss_clean($this->input->post('usuario')));
-            $password = $this->input->post('clave');
-
-            $result = $this->login_model->loginMe($usuario, $password);
-
-            if (!empty($result)) {
-
-                $foto = "";
-                if ($result->foto == "") {
-                    $foto ="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__480.png";// base_url() . "assets/dist/img/avatar/avatar.png";
-                } else {
-                    $foto = base_url() . "uploads/" . $result->foto;
-                }
-                $sessionArray = array(
-                    'idusuario' => $result->idusuario,
-                    'usuario' => $result->nombres . " " . $result->apellidos,
-                    'idrol' => $result->idrol,
-                    'rol' => $result->rol,
-                    'foto' => $foto,
-                    'isLoggedIn' => TRUE,
-                    'menus' =>  $this->menu_model->getPermisos($result->idrol)
-                );
-                $this->session->set_userdata($sessionArray);
-
-                //unset($sessionArray['idusuario'], $sessionArray['isLoggedIn'], $sessionArray['lastLogin']);
-
-                //$loginInfo = array("idusuario" => $result->idusuario, "usuario" => $result->usuario, "machineIp" => $_SERVER['REMOTE_ADDR'], "userAgent" => getBrowserAgent(), "agentString" => $this->agent->agent_string(), "platform" => $this->agent->platform());
-                //$this->login_model->lastLogin($loginInfo);
-
-                redirect('/dashboard');
-            } else {
-                $this->session->set_flashdata('error', 'usuario no encontrado');
-                $this->index();
-            }
+            // $this->session->set_flashdata('error', 'usuario no encontrado');
+            // $this->index();
+            echo json_encode(array(
+                "status" => false,
+                "message" => "usuario no encontrado",
+            ));
         }
+        //}
     }
 
     /**

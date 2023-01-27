@@ -436,7 +436,6 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                                     </div>
 
                                     <div class="col-12">
-
                                         <div class="searchMenu-guests px-20 py-10 border-light rounded-4 js-form-dd js-form-counters">
                                             <div data-x-dd-click="searchMenu-guests">
                                                 <h4 class="text-15 fw-500 ls-2 lh-16">Número de viajeros</h4>
@@ -584,7 +583,6 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
 
                                     <div class="col-12">
@@ -1799,8 +1797,14 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
         let myServicio = {
             cod_servicio: '<?= $cod_servicio ?>',
             titulo: '<?= $titulo ?>',
-            cantidad: 0,
+            descripcion: '<?= $descripcion ?>',
             total: 0,
+            personas: 0,
+            fecha_reserva: '',
+            ninos_menores: 0,
+            ninos_mayores: 0,
+            adultos: 0,
+            adultos_mayores: 0,
         };
         $('#form_reserva').submit(function(e) {
             e.preventDefault();
@@ -1827,7 +1831,12 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                     $("#span-tipo").html((res.data.id_costo == 1) ? `/ Por ${res.data.numero_personas} persona` : "/ Por Paquete");
                     // var myModal = new bootstrap.Modal(document.getElementById("myModal"), {});
                     myServicio.total = res.data.total;
-                    myServicio.cantidad = res.data.numero_personas;
+                    myServicio.personas = res.data.numero_personas;
+                    myServicio.fecha_reserva = res.data.fecha_reserva;
+                    myServicio.ninos_menores = parseInt(res.data.num_ninos_menores);
+                    myServicio.ninos_mayores = parseInt(res.data.num_ninos_mayores);
+                    myServicio.adultos = parseInt(res.data.num_adultos);
+                    myServicio.adultos_mayores = parseInt(res.data.num_adultos_mayores);
                     myModal.show()
                 } else {
                     swal({
@@ -1843,9 +1852,7 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
             return false;
         });
         $("#add_cesta").click(function(event) {
-            /*Evita que se recargue la página*/
             event.preventDefault();
-
             $.ajax({
                 type: "POST",
                 url: baseURL + "ajax/servicio/addCart",
@@ -1856,10 +1863,14 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                 success: function(res) {
                     res = JSON.parse(res);
                     console.log('servicio/addCart', res);
-                    $(".res_cesta").html("");
-                    $(".cont-cesta").html(res.html).fadeIn("slow");
-                    $(".num_censta").html(res.recuento).fadeIn("slow");
-                    myModal.hide()
+                    if (res.status == true) {
+                        $(".res_cesta").html("");
+                        $(".cont-cesta").html(res.html).fadeIn("slow");
+                        $(".num_censta").html(res.recuento).fadeIn("slow");
+                        myModal.hide();
+                    } else {
+
+                    }
 
                 },
             });
@@ -1869,13 +1880,13 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
             event.preventDefault();
             $.ajax({
                 type: "POST",
-                url: baseURL + "ajax/carritoAjax.php",
-                data: "destino=reservas" + "&accion=registrar",
+                url: baseURL + "ajax/servicio/addCart",
+                data: myServicio,
                 beforeSend: function(objeto) {
                     $(".res_cesta").html("Cargand...");
                 },
                 success: function(data) {
-                    $(".res_cesta").html(data).fadeIn("slow");
+                    window.location = baseURL + 'reserva';
                 },
             });
         });

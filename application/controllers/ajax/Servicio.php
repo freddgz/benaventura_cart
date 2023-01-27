@@ -16,16 +16,27 @@ class Servicio extends CI_Controller
     {
         $cod_servicio = $_POST["cod_servicio"];
         $servicio = $this->servicio_model->get($cod_servicio);
-        $cantidad = 1; // $_POST["cantidad"];
         $total = $_POST["total"];
+        $item = array(
+            "descripcion" => $_POST["descripcion"],
+            "personas" => $_POST["personas"],
+            "fecha_reserva" => $_POST["fecha_reserva"],
+            "ninos_menores" => $_POST["ninos_menores"],
+            "ninos_mayores" => $_POST["ninos_mayores"],
+            "adultos" => $_POST["adultos"],
+            "adultos_mayores" => $_POST["adultos_mayores"],
+        );
 
         $cast = [
             'id' => $cod_servicio,
-            'qty' => $cantidad,
+            'qty' => 1,
             'price' => $total,
             'name' => $servicio->titulo,
             'image' =>  $servicio->img_portada,
+            'item' => $item,
         ];
+
+
         if ($this->cart->insert($cast))
             $this->showCart();
         else
@@ -84,7 +95,7 @@ class Servicio extends CI_Controller
             <a class='button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white' href='" . base_url() . "carrito'>
                 Ver Carrito
             </a>
-            <a class='button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20' href='" . base_url() . "reservas'>
+            <a class='button px-30 fw-400 text-14 -outline-blue-1 h-50 text-blue-1 ml-20' href='" . base_url() . "reserva'>
                 Reservar
             </a>
             </div>
@@ -93,6 +104,306 @@ class Servicio extends CI_Controller
             "status" => true,
             "recuento" => $recuento,
             "total" => $total,
+            "html" => $output,
+        ));
+    }
+    public function showEditCart()
+    {
+        $rowid = $_POST["rowid"];
+        $cart = $this->cart->get_item($rowid);
+        $output = "";
+
+        $cod_servicio = $cart["id"];
+        $item_cart = $cart["item"];
+        $servicio = $this->servicio_model->get($cod_servicio);
+        $restriccion = $this->servicio_model->getRestriccion($cod_servicio);
+        $disponibilidad = $this->servicio_model->getDisponibilidad($cod_servicio);
+
+        $titulo = mb_strtoupper($servicio->titulo);
+        $cod_servicio = $servicio->cod_servicio;
+        $descripcion = $servicio->descripcion;
+        $categoria = $servicio->cod_categoria;
+        $sub_categoria = $servicio->cod_subcategori;
+        // $subCategoria=$cate->get_subcate_categoria_controlador($categoria);
+        $id_costo = $servicio->id_tipo_costo;
+        $costo = $servicio->costo;
+        $portada = $servicio->img_portada;
+        $video = $servicio->video_servis;
+        $duracion = $servicio->duracion;
+        $medida_duracion = $servicio->medida_duracion;
+        $idio = [];
+        $idio = explode(",", $servicio->idiomas);
+        // 
+        $cod_disponibilidad = $servicio->disponibilidad;
+        $reservar_cuando = $servicio->reservar_cuando;
+        $medida_cuando = $servicio->medida_cuando;
+        $personas_minima = $servicio->personas_minima;
+        // incluye
+
+        $incluye_hospedaje = $servicio->incluye_hotel;
+        $incluye_transporte = $servicio->incluye_transporte;
+        $incluye_recojo = $servicio->incluye_recojo;
+
+
+        $ninos_menores = $restriccion->ninos_menores;
+        $ninos_mayores = $restriccion->ninos_mayores;
+        $adultos_mayores = $restriccion->adultos_mayores;
+
+        // edades niños menores
+        $edad_min_ninmen = $restriccion->edad_min_ninmen;
+        $edad_max_ninmen = $restriccion->edad_max_ninmen;
+        // edades niños mayores
+        $edad_min_ninmay = $restriccion->edad_min_ninmay;
+        $edad_max_ninmay = $restriccion->edad_max_ninmay;
+        // edad adultos
+        $edad_min_adultos = $restriccion->edad_min_adultos;
+        $edad_max_adultos = $restriccion->edad_max_adultos;
+        // edad adultos mayores
+        $edad_min_admay = $restriccion->edad_min_admay;
+        $edad_max_admay = $restriccion->edad_max_admay;
+
+        if ($ninos_menores == 1 && $ninos_mayores == 1) {
+            $edad_minimo = $restriccion->edad_min_ninmen;
+        } elseif ($ninos_menores == 0 && $ninos_mayores == 1) {
+            $edad_minimo = $restriccion->edad_min_ninmay;
+        } else {
+            $edad_minimo = $restriccion->edad_min_adultos;
+        }
+
+
+        $hora_inicio = "";
+        $hora_fin = "";
+        $fecha_inicio = "";
+        $fecha_fin = "";
+
+        $fecha_disponible = "";
+        $valor_dia = 0;
+        $ray_disponible = array();
+        $fecha_inicio = $disponibilidad->fecha_inicio;
+        $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
+
+
+        $output .= '
+        <form id="form_reserva">
+        <input type="hidden" name="cod_servicio" id="cod_servicio" value="' . $cod_servicio . '">
+        <input type="hidden" name="accion" value="update">
+        <input type="hidden" name="rowid" value="' . $rowid . '">
+
+        <div class="row y-gap-20 pt-30">
+        <div class="col-12">
+            <div class="px-20 py-10 border-light rounded-4 -right">
+
+                <div data-x-dd-click="">';
+        switch ($cod_disponibilidad) {
+            case '1':
+                #todo los dias
+                $texto = "Todo los dias.";
+                $fechaInicio = strtotime(date("Y-m-d"));
+                $fechaFin = strtotime($fecha_fin);
+                for ($i = $fechaInicio; $i <= $fechaFin; $i += 86400) {
+                    $fecha_disponible = date("Y-m-d", $i);
+                    array_push($ray_disponible, $fecha_disponible);
+                }
+                break;
+            case '2':
+                # solo dias de semana
+                $texto = "Solo dias de semana.";
+                $fechaInicio = strtotime(date("Y-m-d"));
+                $fechaFin = strtotime($fecha_fin);
+                for ($i = $fechaInicio; $i <= $fechaFin; $i += 86400) {
+                    $fecha_disponible = date("Y-m-d", $i);
+                    $valor_dia = date('w', strtotime($fecha_disponible));
+                    if ($valor_dia !== "0" && $valor_dia !== "1") {
+                        array_push($ray_disponible, $fecha_disponible);
+                    }
+                }
+                break;
+            case '3':
+                # solo fines de semana
+                $texto = "Solo fines de semana.";
+                $fechaInicio = strtotime(date("Y-m-d"));
+                $fechaFin = strtotime($fecha_fin);
+                for ($i = $fechaInicio; $i <= $fechaFin; $i += 86400) {
+                    $fecha_disponible = date("Y-m-d", $i);
+                    $valor_dia = date('w', strtotime($fecha_disponible));
+                    if ($valor_dia == 0 || $valor_dia == 1) {
+                        array_push($ray_disponible, $fecha_disponible);
+                    }
+                }
+                break;
+            case '4':
+                # solo feriados
+                break;
+            case '5':
+                // personalizado
+                break;
+            default:
+                # code...
+                break;
+        }
+        $fecha_reserva = $this->util->obtener_fecha_format_text($item_cart["fecha_reserva"]);
+        $output .= '
+                    <h4 class="text-15 fw-500 ls-2 lh-16">Fechas Disponibles ' . $texto . '</h4>
+                    <div class="text-15 text-light-1 ls-2 lh-16">
+                        <input type="text" name="fecha_reserva" id="fecha_dispon" value="' . $fecha_reserva . '" required>
+                    </div>
+                </div>
+            </div>
+        </div>';
+
+        $output .= '
+        <div class="col-12">
+            <div class="searchMenu-guests px-20 py-10 border-light rounded-4 js-form-dd js-form-counters">
+                <div data-x-dd-click="searchMenu-guests">
+                    <h4 class="text-15 fw-500 ls-2 lh-16">Número de viajeros</h4>
+                    <div class="d-flex text-15 text-light-1 ls-2 lh-16">
+                        <span class="d-flex">
+                            <input class="js-count-adulto" id="num_adultos" name="num_adultos" style="text-align: right;width: 15px;" value="' . $item_cart["adultos"] . '" readonly required>
+                            Adultos
+                        </span>';
+        if ($ninos_menores == 1) {
+            $output .= '-
+                            <span class="d-flex">
+                                <input class="js-count-infantes" id="num_ninos_menores" name="num_ninos_menores" style="text-align: right;width: 15px;" value="' . $item_cart["ninos_menores"] . '" readonly>
+                                Infantes
+                            </span>';
+        }
+        if ($ninos_mayores == 1) {
+            $output .= '-
+                            <span class="d-flex">
+                                <input class="js-count-ninos" id="nun_ninos_mayores" name="nun_ninos_mayores" style="text-align: right;width: 15px;" value="' . $item_cart["ninos_mayores"] . '" readonly>
+                                Niños
+                            </span>';
+        }
+        if ($adultos_mayores == 1) {
+            $output .= '-
+                            <span class="d-flex">
+                                <input class="js-count-mayor" id="num_adultos_mayores" name="num_adultos_mayores" style="text-align: right;width: 15px;" value="' . $item_cart["adultos_mayores"] . '" readonly>
+                                Adu.Mayor
+                            </span>';
+        }
+        $output .= '</div>
+                </div>
+                <div class="searchMenu-guests__field shadow-2" data-x-dd="searchMenu-guests" data-x-dd-toggle="-is-active">
+                    <div class="bg-white px-30 py-30 rounded-4">
+                        <div class="row y-gap-10 justify-between items-center">
+                            <div class="col-auto">
+                                <div class="text-15 fw-500">Adultos</div>
+                                <div class="text-14 lh-12 text-light-1 mt-5">Edad ' . $edad_min_adultos . " - " . $edad_max_adultos . '</div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="d-flex items-center js-counter" data-value-change=".js-count-adulto">
+                                    <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-down">
+                                        <i class="icon-minus text-12"></i>
+                                    </a>
+
+                                    <div class="flex-center size-20 ml-15 mr-15">
+                                        <div class="text-15 js-count">1</div>
+                                    </div>
+
+                                    <a class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
+                                        <i class="icon-plus text-12"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>';
+
+        if ($ninos_menores == 1) {
+
+            $output .= '<div class="border-top-light mt-24 mb-24"></div>
+
+                            <div class="row y-gap-10 justify-between items-center">
+                                <div class="col-auto">
+                                    <div class="text-15 lh-12 fw-500">Infantes</div>
+                                    <div class="text-14 lh-12 text-light-1 mt-5">Edad ' . $edad_min_ninmen . " - " . $edad_max_ninmen . '</div>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="d-flex items-center js-counter" data-value-change=".js-count-infantes">
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-down">
+                                            <i class="icon-minus text-12"></i>
+                                        </a>
+
+                                        <div class="flex-center size-20 ml-15 mr-15">
+                                            <div class="text-15 js-count">0</div>
+                                        </div>
+
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
+                                            <i class="icon-plus text-12"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>';
+        }
+
+        if ($ninos_mayores == 1) {
+            $output .= '<div class="border-top-light mt-24 mb-24"></div>
+
+                            <div class="row y-gap-10 justify-between items-center">
+                                <div class="col-auto">
+                                    <div class="text-15 fw-500">Niños</div>
+                                    <div class="text-14 lh-12 text-light-1 mt-5">Edad ' . $edad_min_ninmay . " - " . $edad_max_ninmay . '</div>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="d-flex items-center js-counter" data-value-change=".js-count-ninos">
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-down">
+                                            <i class="icon-minus text-12"></i>
+                                        </a>
+
+                                        <div class="flex-center size-20 ml-15 mr-15">
+                                            <div class="text-15 js-count">0</div>
+                                        </div>
+
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
+                                            <i class="icon-plus text-12"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>';
+        }
+        if ($adultos_mayores == 1) {
+            $output .= '<div class="border-top-light mt-24 mb-24"></div>
+
+                            <div class="row y-gap-10 justify-between items-center">
+                                <div class="col-auto">
+                                    <div class="text-15 fw-500">Adul.Mayor</div>
+                                    <div class="text-14 lh-12 text-light-1 mt-5">Edad <?= $edad_min_admay . " - " . $edad_max_admay; ?></div>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="d-flex items-center js-counter" data-value-change=".js-count-mayor">
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-down">
+                                            <i class="icon-minus text-12"></i>
+                                        </a>
+
+                                        <div class="flex-center size-20 ml-15 mr-15">
+                                            <div class="text-15 js-count">0</div>
+                                        </div>
+
+                                        <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
+                                            <i class="icon-plus text-12"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>';
+        }
+        $output .= '
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button class=" -dark-1 py-15 px-35 h-60 col-12 rounded-4 bg-blue-1 text-white">
+                Actualizar
+            </button>
+        </div>
+    </div>
+    </form>';
+
+        echo json_encode(array(
+            "status" => true,
             "html" => $output,
         ));
     }
@@ -239,8 +550,16 @@ class Servicio extends CI_Controller
                         "message" => "Fecha no disponible"
                     ));
                 } else {
+                    $cartitem_updated = false;
+                    if (isset($_POST["rowid"])) {
+                        $rowid = $_POST["rowid"];
+                        $item_cart = $this->cart->get_item($rowid);
+                        $item_cart["item"]["fecha_reserva"] = $fecha_reserva;
+                        $cartitem_updated = $this->cart->update($item_cart);
+                    }
                     echo json_encode(array(
                         "status" => true,
+                        "cartitem_updated" => $cartitem_updated,
                         "message" => "",
                         "data" => array(
                             "num_adultos" => $num_adultos,
