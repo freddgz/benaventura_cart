@@ -66,23 +66,34 @@ class Reserva extends BaseController
         //registrar reserva
         $recuento_reservacion = $this->reservacion_model->getRecuento();
         $cod_reservacion = $this->util->generar_codigo_aleatorio('RE', 35, $recuento_reservacion);
-        $servicio = $this->servicio_model->get($cod_se);
-
+        $cod_servicio = "";
+        // $servicio = $this->servicio_model->get($cod_se);
+        $nro_personas = 0;
+        foreach ($this->cart->contents() as $row) {
+            $_item = $row["item"];
+            $cod_servicio = $row["id"];
+            $nro_personas += $_item["personas"];
+            $costo_servicio = $row["price"];
+        }
+        $costo_servicio = 0;
+        $subtotal = $nro_personas * $costo_servicio;
+        $igv = $subtotal * 0.18;
+        $total = $subtotal + $igv;
         $info = array(
-            "cod_reservacion" => 0,
-            "cod_servicio" => 0,
-            "cod_ciente" => 0,
-            "cod_usuario" => 0,
-            "fecha_reserva" => 0,
-            "hora_reserva" => 0,
-            "nro_personas" => 0,
-            "tipo_costo" => 0,
-            "costo_servicio" => 0,
-            "subtotal" => 0,
-            "igv" => 0,
+            "cod_reservacion" => $cod_reservacion,
+            "cod_servicio" => $cod_servicio,
+            "cod_cliente" => "",
+            "cod_usuario" => $cod_usuario,
+            "fecha_reserva" => date('Y-m-d'),
+            "hora_reserva" => date('H:m'),
+            "nro_personas" => $nro_personas,
+            "tipo_costo" => 2,
+            "costo_servicio" => $costo_servicio,
+            "subtotal" => $nro_personas * $costo_servicio,
+            "igv" => $igv,
             "total" => 0,
             "estado" => 1,
-            "fecha_reg" => "",
+            "fecha_reg" => date('Y-m-d H:m'),
         );
 
         $this->reservacion_model->insert($info);
@@ -90,9 +101,8 @@ class Reserva extends BaseController
 
         $this->cart->destroy();
         echo json_encode(array(
-            "status" => false,
-            "message" => json_encode($_POST),
-            "nombre" => $_POST
+            "status" => true,
+            "message" => "Reservacion $cod_reservacion registrada satisfactoriamente",
         ));
     }
 }

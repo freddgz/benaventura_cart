@@ -14,7 +14,7 @@
                 if (!empty($this->cart->contents())) : ?>
                     <div class="row y-gap-30">
                         <?php
-                        $cod_categoria = 'CAT000001';
+                        // $cod_categoria = 'CAT000001';
                         foreach ($this->cart->contents() as $row) {
                             $cod_servicio = $row['id'];
                             $rowid = $row['rowid'];

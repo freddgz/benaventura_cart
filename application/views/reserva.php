@@ -287,7 +287,7 @@
         <div class="modal-content">
             <div class="text-20 fw-500 lh-15">Confirmacion de Reserva</div>
             <button type="button" class="btn-close float-right" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="modal-body cont_edit">
+            <div class="modal-body confirmacion_content">
 
 
             </div>
@@ -317,6 +317,7 @@
                 res = JSON.parse(res);
                 if (res.status == true) {
                     //TODO: mostrar informacion de reserva
+                    $(".confirmacion_content").html(`<p>${res.message}</p>`)
                     modalConfirmacion.show();
                 } else {
                     swal({
