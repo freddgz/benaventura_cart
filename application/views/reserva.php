@@ -40,7 +40,7 @@
         <div class="row">
             <div class="col-xl-7 col-lg-8 order-xs-2">
                 <?php
-                if (true) {
+                if ($this->session->userdata('isLoggedIn') == null) {
                 ?>
                     <div class="py-15 px-20 rounded-4 text-15 bg-blue-1-05">
                         <a href="#" class="text-blue-1 fw-500">Inicia sessión o Registrate</a>
@@ -152,9 +152,21 @@
                         </div>
                     </form>
                     <!-- aqui termina los datos de reserva -->
-                <?php  # code...
-                }
-                ?>
+                <?php  } else {
+                    $nombre = $this->session->userdata(('nombre')); ?>
+                    <h2 class="text-22 fw-500 mt-40 md:mt-24">Datos del Reservante</h2>
+                    <div class="row x-gap-20 y-gap-20 pt-20">
+                        <div class="col-md-6">
+                            <p>Nombre: <?= $nombre ?></p>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" id="btnSiguiente" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
+                                SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                <?php  } ?>
                 <div class="px-10 mt-30 border-light rounded-4">
                     <div class="text-20 fw-500 mb-30">Detalle de Reservación</div>
                     <?php
@@ -333,6 +345,13 @@
 
         });
         $('#form_invitado').submit(function(e) {
+            e.preventDefault();
+
+            console.log('form', $('#form_invitado').serialize());
+            myModal.show();
+            return false;
+        });
+        $('#btnSiguiente').on('click', function(e) {
             e.preventDefault();
 
             myModal.show();

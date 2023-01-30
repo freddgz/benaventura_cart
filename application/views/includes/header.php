@@ -140,8 +140,9 @@
                 ?>
                   <a href="javascript:;" class="dropdown-nav-link dropdown-toggle d-flex align-items-center " id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="icon-user mr-3 ml-20 text-30"></i>
-                    <span class="d-inline-block font-size-14">
-                      <?= " " . $nombre ?></span>
+                    <span class="d-inline-block font-size-14 pl-1">
+                      <?= $nombre ?>
+                    </span>
                   </a>
                   <div id="setingUser" class="dropdown-menu dropdown-unfold dropdown-menu-right mt-0" aria-labelledby="dropdownMenuButton2">
                     <a class="dropdown-item" href="#">My Perfil</a>
