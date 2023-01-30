@@ -86,7 +86,7 @@
                       $categorias = $this->categoria_model->getAll();
                       foreach ($categorias as $index => $row) { ?>
                         <li class="menu-item-has-children">
-                          <a data-barba href="<?= base_url() . strtolower($row->nombre); ?>">
+                          <a data-barba href="#!">
                             <span class="mr-10"><?= $row->nombre; ?></span>
                             <i class="icon icon-chevron-sm-down"></i>
                           </a>
@@ -330,4 +330,5 @@
 
     <script type="text/javascript">
       let baseURL = "<?= base_url() ?>";
+      let gisLoggedIn = <?= ($this->session->userdata('isLoggedIn') !== null) ? "true" : "false" ?>;
     </script>

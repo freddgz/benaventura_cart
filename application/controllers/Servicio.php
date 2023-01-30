@@ -18,8 +18,9 @@ class Servicio extends BaseController
     public function index()
     {
     }
-    public function categoria($cod_categoria)
+    public function categoriaSearch($cod_categoria, $s)
     {
+
         $filtro_subcategoria = "";
         $filtro_categoria = "";
         $cod_categoria = strtolower($cod_categoria);
@@ -42,13 +43,19 @@ class Servicio extends BaseController
         $filtros["categoria"] = $filtro_categoria;
         $filtros["subcategoria"] = $filtro_subcategoria;
         $data["filtro"] = $filtros;
+        $data["search"] = $s;
         $data["duraciones"] = ARRAY_DURACION;
+        $data["destinos"] = $this->servicio_model->getTop();
         $start = 0;
         $servicios = $this->servicio_model->getAllClean($filtro_categoria, $start);
         $data["servicios"] = $servicios;
         $data["total"] =  sizeof($servicios);
         $this->global['pageTitle'] = 'VenAventura : Inicio';
         $this->loadViews("servicios_filtro", $this->global, $data, NULL);
+    }
+    public function categoria($cod_categoria)
+    {
+        $this->categoriaSearch($cod_categoria, "");
     }
     public function servicio($cod_servicio)
     {

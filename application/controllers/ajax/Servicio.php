@@ -583,10 +583,11 @@ class Servicio extends CI_Controller
         $duraciones = isset($_POST["duraciones"]) ? $_POST["duraciones"] : [];
         $precio_minimo = $_POST["precio_minimo"];
         $precio_maximo = $_POST["precio_maximo"];
+        $texto = $_POST["texto"];
         $start = 0;
-        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start);
+        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
         $servicios = $resultado["data"];
-        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start);
+        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
 
         // $data["total"] = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $start);
         $output = "";

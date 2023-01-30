@@ -139,14 +139,15 @@
                                             Al continuar con esta reserva, acepto los <a href="#" class="text-blue-1 fw-500">Términos de uso y la Política de privacidad</a> de VenAventura.
                                         </div>
                                     </div>
-
-                                    <div class="col-auto">
-
-                                        <button type="submit" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
-                                            SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
-                                        </button>
-
-                                    </div>
+                                    <?php if (!empty($this->cart->contents())) : ?>
+                                        <div class="col-auto">
+                                            <button type="submit" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
+                                                SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
+                                            </button>
+                                        </div>
+                                    <?php else : ?>
+                                        <p>cesta vacia</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -159,11 +160,15 @@
                         <div class="col-md-6">
                             <p>Nombre: <?= $nombre ?></p>
                         </div>
-                        <div class="col-12">
-                            <button type="button" id="btnSiguiente" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
-                                SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
-                            </button>
-                        </div>
+                        <?php if (!empty($this->cart->contents())) : ?>
+                            <div class="col-12">
+                                <button type="button" id="btnSiguiente" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
+                                    SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
+                                </button>
+                            </div>
+                        <?php else : ?>
+                            <p>cesta vacia</p>
+                        <?php endif; ?>
                     </div>
 
                 <?php  } ?>
@@ -310,6 +315,7 @@
     $(document).ready(function() {
         let myModal = new bootstrap.Modal(document.getElementById("modalCheckout"), {});
         let modalConfirmacion = new bootstrap.Modal(document.getElementById("modalConfirmacion"), {});
+        let is
         $("#modalConfirmacion").on("hidden.bs.modal", function() {
             location.reload();
         });
@@ -354,6 +360,7 @@
         $('#btnSiguiente').on('click', function(e) {
             e.preventDefault();
 
+            console.log('form', $('#form_invitado').serialize());
             myModal.show();
             return false;
         });

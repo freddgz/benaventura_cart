@@ -18,6 +18,13 @@ if ($total >= 1) {
                 <div class="col-xl-3 col-lg-4 lg:d-none">
                     <aside class="sidebar y-gap-40">
                         <div class="sidebar__item -no-border">
+                            <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
+                            <div class="form-input ">
+                                <input type="text" id="filtro" name="filtro" value="<?= $search ?>">
+                                <label class="lh-1 text-16 text-light-1">Filtro</label>
+                            </div>
+                        </div>
+                        <div class="sidebar__item -no-border">
                             <h5 class="text-18 fw-500 mb-10">Categorias</h5>
                             <input type="hidden" name="cod_categoria" id="cod_categoria" value="<?= $categoria->cod_categoria ?>">
                             <div class="sidebar-checkbox">
@@ -34,6 +41,37 @@ if ($total >= 1) {
                                                     </div>
                                                 </div>
                                                 <div class="text-15 ml-10"><?= $sub->nombre; ?></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="text-15 text-light-1">
+                                                <?php
+                                                //echo print_r(array_search($cod_sub, $subcategorias));
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="sidebar__item -no-border">
+                            <h5 class="text-18 fw-500 mb-10">Destinos</h5>
+                            <div class="sidebar-checkbox">
+                                <?php
+                                foreach ($destinos as $row) {
+                                ?>
+                                    <div class="row y-gap-10 items-center justify-between">
+                                        <div class="col-auto">
+                                            <div class="d-flex items-center">
+                                                <div class="form-checkbox ">
+                                                    <input type="checkbox" class="common_selector subcategoria" value="<?= $row->id_region; ?>">
+                                                    <div class="form-checkbox__mark">
+                                                        <div class="form-checkbox__icon icon-check"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-15 ml-10"><?= $row->nombre; ?></div>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -570,6 +608,7 @@ if ($total >= 1) {
             console.log('filter_data() ');
             $('#contenData').html('<div id="loading" style="" ></div>');
             // var action = 'fetch_data';
+            var filtro = $('#filtro').val();
             var precio_minimo = $('#hidden_minimum_price').val();
             var precio_maximo = $('#hidden_maximum_price').val();
             let cod_categoria = $("#cod_categoria").val();
@@ -587,6 +626,7 @@ if ($total >= 1) {
                     cod_sub_categoria: cod_sub_categoria,
                     cod_categoria: cod_categoria,
                     duraciones: duraciones,
+                    texto: filtro,
                     // storage: storage
                 },
                 success: function(res) {
@@ -623,6 +663,11 @@ if ($total >= 1) {
                 filter_data();
             }
         });
+        $("#filtro").on("keydown", function(event) {
+            if (event.which == 13)
+                filter_data();
+        });
+
 
     });
 </script>

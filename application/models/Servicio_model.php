@@ -15,7 +15,7 @@ class Servicio_model extends CI_Model
                 LIMIT " . $start . "," . NUM_ITEMS_BY_PAGE;
         return $this->db->query($query)->result();
     }
-    function getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start)
+    function getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto)
     {
         $array_duracion = [];
         foreach ($duraciones as $nro)
@@ -26,6 +26,8 @@ class Servicio_model extends CI_Model
                 FROM servicios AS s
                 , detalles_servicio AS d 
                 WHERE s.cod_servicio=d.cod_servicio ";
+        if ($texto !== "")
+            $query .= " AND s.titulo like '%$texto%' ";
         if ($cod_sub_categoria !== "")
             $query .= " AND s.cod_subcategori in ('$cod_sub_categoria') ";
         if (sizeof($duraciones) > 0)
@@ -38,7 +40,7 @@ class Servicio_model extends CI_Model
         $result = $this->db->query($query)->result();
         return array("data" => $result, "query" => $query);
     }
-    function getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start)
+    function getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto)
     {
         $array_duracion = [];
         foreach ($duraciones as $nro)
