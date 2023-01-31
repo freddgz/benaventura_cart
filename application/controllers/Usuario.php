@@ -11,7 +11,8 @@ class Usuario extends BaseController
         $this->load->library('session');
         $this->load->library('util');
         $this->load->model('menu_model');
-        $this->isLoggedIn();
+        $this->load->model('usuario_model');
+        // $this->isLoggedIn();
 
         $this->global['gSubtitle'] = 'Seguridad';
     }
@@ -26,4 +27,5 @@ class Usuario extends BaseController
         $this->global['pageTitle'] = PROYECTO .  ' : Usuarios';
         $this->loadViews("seguridad/usuario", $this->global, null, NULL);
     }
+   
 }

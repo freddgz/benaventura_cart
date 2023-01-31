@@ -84,6 +84,41 @@ class Usuario_model extends CI_Model
             return $result->row()->total;
         }
     }
+    function getByNombres($nombre, $apellido)
+    {
+        $query = "SELECT * FROM usuarios WHERE nombre='$nombre' AND apellido='$apellido'";
+        $result = $this->db->query($query);
+        // if ($result->num_rows() > 0) {
+        return array(
+            "row" => $result->row(),
+            "query" => $query
+        );
+        // }
+    }
+    function getByTelefono($telefono)
+    {
+        $query = "SELECT * FROM usuarios WHERE telefono='$telefono'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->row();
+        }
+    }
+    function getByEmail($email)
+    {
+        $query = "SELECT * FROM usuarios WHERE email='$email'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->row();
+        }
+    }
+    function getByNro($run)
+    {
+        $query = "SELECT * FROM usuarios WHERE run='$run'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->row();
+        }
+    }
     function getUsuarioInvitado($run)
     {
         $query = "SELECT

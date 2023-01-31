@@ -20,7 +20,7 @@ if ($total >= 1) {
                         <div class="sidebar__item -no-border">
                             <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
                             <div class="form-input ">
-                                <input type="text" id="filtro" name="filtro" value="<?= $search ?>">
+                                <input type="text" id="filtro" name="filtro" value="<?= $filtro['search'] ?>">
                                 <label class="lh-1 text-16 text-light-1">Filtro</label>
                             </div>
                         </div>
@@ -66,7 +66,7 @@ if ($total >= 1) {
                                         <div class="col-auto">
                                             <div class="d-flex items-center">
                                                 <div class="form-checkbox ">
-                                                    <input type="checkbox" class="common_selector subcategoria" value="<?= $row->id_region; ?>">
+                                                    <input type="checkbox" class="common_selector destinos" value="<?= $row->id_region; ?>">
                                                     <div class="form-checkbox__mark">
                                                         <div class="form-checkbox__icon icon-check"></div>
                                                     </div>
@@ -602,6 +602,11 @@ if ($total >= 1) {
                 el.checked = true;
             // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
         });
+        document.querySelectorAll(".destinos").forEach((el, idx) => {
+            if (el.value == '<?= $filtro["destino"] ?>')
+                el.checked = true;
+            // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
+        });
         filter_data();
 
         function filter_data() {
@@ -614,6 +619,7 @@ if ($total >= 1) {
             let cod_categoria = $("#cod_categoria").val();
             let cod_sub_categoria = get_filter('subcategoria');
             let duraciones = get_filter('duracion');
+            let destinos = get_filter('destinos');
             // var ram = get_filter('ram');
             // var storage = get_filter('storage');
             $.ajax({
@@ -626,6 +632,7 @@ if ($total >= 1) {
                     cod_sub_categoria: cod_sub_categoria,
                     cod_categoria: cod_categoria,
                     duraciones: duraciones,
+                    destinos: destinos,
                     texto: filtro,
                     // storage: storage
                 },

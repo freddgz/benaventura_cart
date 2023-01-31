@@ -200,7 +200,7 @@
 
       ?>
         <div data-anim-child="slide-up delay-<?= $de; ?>" class="col-xl-<?= $amplitud; ?> col-md-4 col-sm-6">
-          <a href="#" class="citiesCard -type-3 d-block h-full rounded-4 ">
+          <a href="<?= base_url() . "categoria/pesca?destino=" . $row->id_region; ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
             <div class="citiesCard__image ratio ratio-1:1">
               <img class="col-12 js-lazy" src="#" data-src="<?= SERVER_IMG ?>destinos/<?= $row->imagen; ?>" alt="image">
             </div>
@@ -589,7 +589,7 @@
 
     $('#btnSearch').click(function() {
       let texto = $("#search").val();
-      window.location = `${baseURL}categoria/cat_aventura/${texto}`;
+      window.location = `${baseURL}categoria/cat_aventura?search=${texto}`;
 
     });
   });

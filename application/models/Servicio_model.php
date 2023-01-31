@@ -15,7 +15,7 @@ class Servicio_model extends CI_Model
                 LIMIT " . $start . "," . NUM_ITEMS_BY_PAGE;
         return $this->db->query($query)->result();
     }
-    function getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto)
+    function getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos)
     {
         $array_duracion = [];
         foreach ($duraciones as $nro)
@@ -24,15 +24,20 @@ class Servicio_model extends CI_Model
         $query = "SELECT 
                 * 
                 FROM servicios AS s
-                , detalles_servicio AS d 
-                WHERE s.cod_servicio=d.cod_servicio ";
+                inner join detalles_servicio AS d on s.cod_servicio=d.cod_servicio
+                inner join geo_servicios g on g.cod_servicio = s.cod_servicio
+                WHERE  s.cod_categoria='$cod_categoria' ";
+        // WHERE s.cod_servicio=d.cod_servicio ";
         if ($texto !== "")
             $query .= " AND s.titulo like '%$texto%' ";
         if ($cod_sub_categoria !== "")
             $query .= " AND s.cod_subcategori in ('$cod_sub_categoria') ";
+        if ($destinos !== "")
+            $query .= " AND g.id_region in ('$destinos') ";
         if (sizeof($duraciones) > 0)
             $query .= " AND ($query_duracion)";
-        $query .= " AND s.cod_categoria='$cod_categoria'
+        // $query .= " AND s.cod_categoria='$cod_categoria'
+        $query .= " 
                 AND s.costo between $precio_minimo and $precio_maximo
                 ORDER BY s.fecha_reg ASC 
                 LIMIT " . $start . "," . NUM_ITEMS_BY_PAGE;
@@ -40,7 +45,7 @@ class Servicio_model extends CI_Model
         $result = $this->db->query($query)->result();
         return array("data" => $result, "query" => $query);
     }
-    function getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto)
+    function getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos)
     {
         $array_duracion = [];
         foreach ($duraciones as $nro)
@@ -49,14 +54,21 @@ class Servicio_model extends CI_Model
         $query = "SELECT
                 COUNT(*) as total
                 FROM servicios AS s
-                , detalles_servicio AS d 
-                WHERE s.cod_servicio=d.cod_servicio ";
+                inner join detalles_servicio AS d on s.cod_servicio=d.cod_servicio
+                inner join geo_servicios g on g.cod_servicio = s.cod_servicio
+                WHERE  s.cod_categoria='$cod_categoria' ";
+        // WHERE s.cod_servicio=d.cod_servicio ";
+        if ($texto !== "")
+            $query .= " AND s.titulo like '%$texto%' ";
         if ($cod_sub_categoria !== "")
             $query .= " AND s.cod_subcategori in ('$cod_sub_categoria') ";
+        if ($destinos !== "")
+            $query .= " AND g.id_region in ('$destinos') ";
         if (sizeof($duraciones) > 0)
             $query .= " AND ($query_duracion)";
-        $query .= " AND s.cod_categoria='$cod_categoria'
-        AND s.costo between $precio_minimo and $precio_maximo
+        // $query .= " AND s.cod_categoria='$cod_categoria'
+        $query .= " 
+                AND s.costo between $precio_minimo and $precio_maximo
          ";
         return (int) $this->db->query($query)->row()->total;
     }

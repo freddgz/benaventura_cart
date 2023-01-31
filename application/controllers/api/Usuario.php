@@ -1,3 +1,4 @@
+
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 require APPPATH . 'libraries/BaseController.php';
@@ -12,6 +13,99 @@ class Usuario extends BaseController
         $this->load->library('util');
         $this->load->model('usuario_model');
         $this->load->model('login_model');
+    }
+    public function add()
+    {
+        $nombre = $this->util->limpiar_cadena($_POST['us_nombre']);
+        $apellido = $this->util->limpiar_cadena($_POST['us_apellido']);
+        $run = $this->util->limpiar_cadena($_POST['us_run']);
+        $direccion = $this->util->limpiar_cadena($_POST['us_direccion']);
+        $email = $this->util->limpiar_cadena($_POST['us_email']);
+        $telefono = $this->util->limpiar_cadena($_POST['us_telefono']);
+        $contrasena = $this->util->limpiar_cadena($_POST['us_contrasena']);
+        $conf_contrasena = $this->util->limpiar_cadena($_POST['us_conf_contrasena']);
+        // $politica = $this->util->limpiar_cadena($_POST['politica']);
+        $poli = isset($_POST['politica']) ? 1 : 0;
+        // if ($politica == "on") {
+        //     $poli = 1;
+        // }
+        $respuesta = "";
+        if ($contrasena == $conf_contrasena) {
+            // validamos que no haya duplicado de nombres y apellido
+            $eva_nombres = $this->usuario_model->getByNombres($nombre, $apellido);
+            if (!isset($eva_nombres["row"])) {
+                // echo "nombres existenm";
+                // evaluamos el run que no haya duplicados
+                $eva_run = $this->usuario_model->getByNro($run);
+                if (!isset($eva_run)) {
+                    // evaluamos email que no haya duplicados
+                    $eva_email =  $this->usuario_model->getByEmail($email);
+                    if (!isset($eva_email)) {
+                        // evaluamos que no haya duplicado de telefono
+                        $eva_telefono =  $this->usuario_model->getByTelefono($telefono);
+                        if (!isset($eva_telefono)) {
+                            // if (!isset($_SESSION['usuario_invit']) && $_SESSION['usuario_invit'] !== "") {
+                            //     $cod_usuario = $_SESSION['cliente'];
+                            // } else {
+                            // generamos codigo de usuario
+                            $recuento = $this->usuario_model->getRecuento() + 1;
+                            $cod_usuario = $this->util->generar_codigo_aleatorio('US', 10, $recuento);
+                            // }
+                            $cod_veri = $this->util->generar_codigo_aleatorio('VV', 7, $recuento);
+                            // encriptamos contraseña
+                            $contra_encrip = $this->util->encryption($contrasena);
+                            // GUARDAMOS DATOS DE USUARIO EN UN ARRAY
+
+                            $info = array(
+                                "tipo_usurio" => 1,
+                                'cod_usuario' => $cod_usuario,
+                                'cod_verificacion' => $cod_veri,
+                                "nombre" => $nombre,
+                                "apellido" => $apellido,
+                                "run" => $run,
+                                // "id_region" => $departamento_invit,
+                                // "id_provincia" => "",
+                                // "id_comuna" => "",
+                                "direccion" => $direccion,
+                                "telefono" => $telefono,
+                                "email" => $email,
+                                "contrasena" => $contra_encrip,
+                                "politica" => $poli,
+                                "estado_verif" => 0,
+                                "estado" => 1,
+                            );
+                            $insertar_registro = $this->usuario_model->insert($info);
+                            if ($insertar_registro) {
+                            } else {
+                                $respuesta = "No pudimos registrarte.";
+                            }
+                        } else {
+                            $respuesta = "El telefono ingresado ya se encuentra registrado.";
+                        }
+                    } else {
+                        $respuesta = "El email $email ingresado ya se encuentra registrado.";
+                    }
+                } else {
+                    $respuesta = "El RUN ingresado ya estan registrados.";
+                }
+            } else {
+                $respuesta = "El nombre y apellido ingresado ya estan registrados.";
+            }
+        } else {
+            $respuesta = "Las contraseñas ingresadas no coinsiden";
+        }
+
+        if ($respuesta == "") {
+            echo json_encode(array(
+                "status" => true,
+                "message" => "",
+            ));
+        } else {
+            echo json_encode(array(
+                "status" => false,
+                "message" => $respuesta,
+            ));
+        }
     }
     function getCombo()
     {

@@ -152,7 +152,7 @@ class Util
         return $letra . $numero; // te dejo, ve ok dibugueando cada controlador que sea la primer linea, despues se la borras, bye ok bro gracias
     }
 
-    protected function limpiar_cadena($cadena)
+    function limpiar_cadena($cadena)
     {
         $cadena = trim($cadena);
         $cadena = stripcslashes($cadena);

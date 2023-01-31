@@ -10,6 +10,7 @@ class Servicio extends BaseController
     {
         parent::__construct();
         $this->load->model('servicio_model');
+        $this->load->library('util');
     }
 
     /**
@@ -20,6 +21,14 @@ class Servicio extends BaseController
     }
     public function categoriaSearch($cod_categoria, $s)
     {
+    }
+    public function categoria($cod_categoria)
+    {
+        // echo "cod_categoria: $cod_categoria";
+        // echo "id_region: " . $_GET["id_region"];
+        $s = isset($_GET["search"]) ? $_GET["search"] : "";
+        $destino = isset($_GET["destino"]) ? $_GET["destino"] : "";//id_region
+
 
         $filtro_subcategoria = "";
         $filtro_categoria = "";
@@ -42,8 +51,9 @@ class Servicio extends BaseController
         $filtros = array();
         $filtros["categoria"] = $filtro_categoria;
         $filtros["subcategoria"] = $filtro_subcategoria;
+        $filtros["search"] = $s;
+        $filtros["destino"] = $destino;
         $data["filtro"] = $filtros;
-        $data["search"] = $s;
         $data["duraciones"] = ARRAY_DURACION;
         $data["destinos"] = $this->servicio_model->getTop();
         $start = 0;
@@ -52,10 +62,6 @@ class Servicio extends BaseController
         $data["total"] =  sizeof($servicios);
         $this->global['pageTitle'] = 'VenAventura : Inicio';
         $this->loadViews("servicios_filtro", $this->global, $data, NULL);
-    }
-    public function categoria($cod_categoria)
-    {
-        $this->categoriaSearch($cod_categoria, "");
     }
     public function servicio($cod_servicio)
     {

@@ -18,6 +18,7 @@ class Servicio extends CI_Controller
         $servicio = $this->servicio_model->get($cod_servicio);
         $total = $_POST["total"];
         $item = array(
+            "cod_cliente" => $_POST["cod_cliente"],
             "descripcion" => $_POST["descripcion"],
             "personas" => $_POST["personas"],
             "fecha_reserva" => $_POST["fecha_reserva"],
@@ -35,7 +36,6 @@ class Servicio extends CI_Controller
             'image' =>  $servicio->img_portada,
             'item' => $item,
         ];
-
 
         if ($this->cart->insert($cast))
             $this->showCart();
@@ -580,80 +580,86 @@ class Servicio extends CI_Controller
     {
         $cod_categoria = $_POST["cod_categoria"];
         $cod_sub_categoria = isset($_POST["cod_sub_categoria"]) ? implode("','", $_POST["cod_sub_categoria"]) : "";
+        $destinos = isset($_POST["destinos"]) ? implode("','", $_POST["destinos"]) : "";
         $duraciones = isset($_POST["duraciones"]) ? $_POST["duraciones"] : [];
         $precio_minimo = $_POST["precio_minimo"];
         $precio_maximo = $_POST["precio_maximo"];
         $texto = $_POST["texto"];
         $start = 0;
-        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
+        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos);
         $servicios = $resultado["data"];
-        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
+        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos);
 
         // $data["total"] = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $start);
         $output = "";
-        foreach ($servicios as $key => $row) {
-            $geo = $this->servicio_model->getGeo_x_Servicio($row->cod_servicio);
-            $row->geo = isset($geo) ? $geo->region . ", " . $geo->provincia : "No definido.";
+        if ($total > 0) {
+            foreach ($servicios as $key => $row) {
+                $geo = $this->servicio_model->getGeo_x_Servicio($row->cod_servicio);
+                $row->geo = isset($geo) ? $geo->region . ", " . $geo->provincia : "No definido.";
 
 
-            $output .= "<div class='col-lg-4 col-sm-6'>
-            <a href='" . base_url() . "detalleTour/" . $row->cod_servicio . "' class='tourCard -type-1 rounded-4'>
-                <div class='tourCard__image'>
-                    <div class='cardImage ratio ratio-1:1'>
-                        <div class='cardImage__content'>
-                            <img class='rounded-4 col-12 js-lazy loaded' src='" . SERVER_IMG . "portada/" . $row->img_portada . "' alt='image' data-ll-status='loaded'>
-                        </div>
-                        <div class='cardImage__wishlist'>
-                            <button class='button -blue-1 bg-white size-30 rounded-full shadow-2'>
-                                <i class='icon-heart text-12'></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class='tourCard__content mt-10'>
-                    <div class='d-flex items-center lh-14 mb-5'>
-                        <div class='text-14 text-light-1'>
-                            $row->duracion $row->medida_cuando
-                        </div>
-                        <div class='size-3 bg-light-1 rounded-full ml-10 mr-10'></div>
-                        <div class='text-14 text-light-1'>
-                            $row->cod_categoria
-                        </div>
-                    </div>
-                    <h4 class='tourCard__title text-dark-1 text-18 lh-16 fw-500'>
-                        <span>$row->titulo</span>
-                    </h4>
-                    <p class='text-light-1 lh-14 text-14 mt-5'>
-                        $row->geo
-                    </p>
-                    <div class='row justify-between items-center pt-15'>
-                        <div class='col-auto'>
-                            <div class='d-flex items-center'>
-                                <div class='d-flex items-center x-gap-5'>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                </div>
-                                <div class='text-14 text-light-1 ml-10'>
-                                    3,014 reviews
-                                </div>
+                $output .= "<div class='col-lg-4 col-sm-6'>
+                <a href='" . base_url() . "detalleTour/" . $row->cod_servicio . "' class='tourCard -type-1 rounded-4'>
+                    <div class='tourCard__image'>
+                        <div class='cardImage ratio ratio-1:1'>
+                            <div class='cardImage__content'>
+                                <img class='rounded-4 col-12 js-lazy loaded' src='" . SERVER_IMG . "portada/" . $row->img_portada . "' alt='image' data-ll-status='loaded'>
+                            </div>
+                            <div class='cardImage__wishlist'>
+                                <button class='button -blue-1 bg-white size-30 rounded-full shadow-2'>
+                                    <i class='icon-heart text-12'></i>
+                                </button>
                             </div>
                         </div>
-                        <div class='col-auto'>
+                    </div>
+                    <div class='tourCard__content mt-10'>
+                        <div class='d-flex items-center lh-14 mb-5'>
                             <div class='text-14 text-light-1'>
-                                From
-                                <span class='text-16 fw-500 text-dark-1'>$
-                                    $row->costo
-                                </span>
+                                $row->duracion $row->medida_cuando
+                            </div>
+                            <div class='size-3 bg-light-1 rounded-full ml-10 mr-10'></div>
+                            <div class='text-14 text-light-1'>
+                                $row->cod_categoria
+                            </div>
+                        </div>
+                        <h4 class='tourCard__title text-dark-1 text-18 lh-16 fw-500'>
+                            <span>$row->titulo</span>
+                        </h4>
+                        <p class='text-light-1 lh-14 text-14 mt-5'>
+                            $row->geo
+                        </p>
+                        <div class='row justify-between items-center pt-15'>
+                            <div class='col-auto'>
+                                <div class='d-flex items-center'>
+                                    <div class='d-flex items-center x-gap-5'>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                    </div>
+                                    <div class='text-14 text-light-1 ml-10'>
+                                        3,014 reviews
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-auto'>
+                                <div class='text-14 text-light-1'>
+                                    From
+                                    <span class='text-16 fw-500 text-dark-1'>$
+                                        $row->costo
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>";
+                </a>
+            </div>";
+            }
+        } else {
+            $output .= "No hay resultados con estos filtros";
         }
+
         $json = array(
             "query" => $resultado["query"],
             "total" => $total,

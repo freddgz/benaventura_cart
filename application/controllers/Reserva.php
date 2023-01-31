@@ -63,7 +63,6 @@ class Reserva extends BaseController
 
                 $info["cod_usuario"] = $cod_usuario;
                 $info["cod_verificacion"] = $cod_veri;
-                $info["estado_verif"] = $cod_veri;
                 $info["estado_verif"] = 0;
                 $info["estado"] = 1;
                 $this->usuario_model->insert($info);
@@ -73,12 +72,14 @@ class Reserva extends BaseController
         $recuento_reservacion = $this->reservacion_model->getRecuento();
         $cod_reservacion = $this->util->generar_codigo_aleatorio('RE', 35, $recuento_reservacion);
         $cod_servicio = "";
+        $cod_cliente = "";
         // $servicio = $this->servicio_model->get($cod_se);
         $nro_personas = 0;
         foreach ($this->cart->contents() as $row) {
             $_item = $row["item"];
             $cod_servicio = $row["id"];
             $nro_personas += $_item["personas"];
+            $cod_cliente = $_item["cod_cliente"];
             $costo_servicio = $row["price"];
         }
         $costo_servicio = 0;
@@ -88,7 +89,7 @@ class Reserva extends BaseController
         $info = array(
             "cod_reservacion" => $cod_reservacion,
             "cod_servicio" => $cod_servicio,
-            "cod_cliente" => "",
+            "cod_cliente" => $cod_cliente,
             "cod_usuario" => $cod_usuario,
             "fecha_reserva" => date('Y-m-d'),
             "hora_reserva" => date('H:m'),

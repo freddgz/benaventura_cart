@@ -1,6 +1,7 @@
 <?php
 $titulo = mb_strtoupper($servicio->titulo);
 $cod_servicio = $servicio->cod_servicio;
+$cod_cliente = $servicio->cod_cliente;
 $descripcion = $servicio->descripcion;
 $categoria = $servicio->cod_categoria;
 $sub_categoria = $servicio->cod_subcategori;
@@ -1796,6 +1797,7 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
         let myModal = new bootstrap.Modal(document.getElementById("myModal"), {});
         let myServicio = {
             cod_servicio: '<?= $cod_servicio ?>',
+            cod_cliente: '<?= $cod_cliente ?>',
             titulo: '<?= $titulo ?>',
             descripcion: '<?= $descripcion ?>',
             total: 0,
