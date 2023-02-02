@@ -9,6 +9,7 @@ class Servicio extends CI_Controller
         parent::__construct();
         $this->load->library('util');
         $this->load->model('servicio_model');
+        $this->load->model('categoria_model');
         // $this->isLoggedIn();
     }
 
@@ -104,6 +105,59 @@ class Servicio extends CI_Controller
             "status" => true,
             "recuento" => $recuento,
             "total" => $total,
+            "html" => $output,
+        ));
+    }
+
+    public function buscar()
+    {
+        $texto = $_POST["texto"];
+        $output = "";
+        $regiones = $this->servicio_model->searchByRegion($texto);
+
+        if (sizeof($regiones) > 0) {
+            $output .= "<h6 class='px-20'>Destinos</h6><hr>";
+
+            foreach ($regiones as $key => $row) {
+                $output .= "
+                    <div>
+                      <a href='" . base_url() . "categoria/cat_aventura?destino=$row->id_region' class='-link d-block col-12 text-left rounded-4 px-20 py-15 js-search-option'>
+                        <div class='d-flex'>
+                          <div class='icon-location-2 text-light-1 text-20 pt-4'></div>
+                          <div class='ml-10'>
+                            <div class='text-15 lh-12 fw-500 js-search-option-target'>$row->region</div>
+                            <div class='text-14 lh-12 text-light-1 mt-5'>Región</div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>";
+            }
+        }
+        $categorias = $this->categoria_model->getAll_ConServicio();
+
+        foreach ($categorias as $key => $row) {
+            $servicios = $this->categoria_model->searchServicio($row->cod_categoria, $texto);
+
+            if (sizeof($servicios) > 0) {
+                $output .= "<h6 class='px-20'>$row->nombre</h6><hr>";
+                foreach ($servicios as $key => $row2) {
+                    $output .= "
+                    <div>
+                      <a href='" . base_url() . "detalleTour/$row2->cod_servicio' class='-link d-block col-12 text-left rounded-4 px-20 py-15 js-search-option'>
+                        <div class='d-flex'>
+                          <div class='icon-globe text-light-1 text-20 pt-4'></div>
+                          <div class='ml-10'>
+                            <div class='text-15 lh-12 fw-500 js-search-option-target'>$row2->titulo</div>
+                            <div class='text-14 lh-12 text-light-1 mt-5'>$row->nombre</div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>";
+                }
+            }
+        }
+        echo json_encode(array(
+            "status" => true,
             "html" => $output,
         ));
     }

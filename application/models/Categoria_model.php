@@ -17,6 +17,17 @@ class Categoria_model extends CI_Model
                 where EXISTS (select 1 from servicios as s where s.cod_categoria=c.cod_categoria)";
         return $this->db->query($query)->result();
     }
+    function searchServicio($cod_categoria, $texto)
+    {
+        $query = "SELECT 
+        s.* 
+        FROM categorias AS c
+        , servicios AS s 
+        WHERE c.cod_categoria=s.cod_categoria 
+        AND c.cod_categoria='$cod_categoria' 
+        AND s.titulo LIKE '%" . $texto . "%'";
+        return $this->db->query($query)->result();
+    }
     function getAll_Subcateoria_IdCategoria($cod_categoria)
     {
         $query = "SELECT DISTINCT 
@@ -26,7 +37,7 @@ class Categoria_model extends CI_Model
         WHERE c.cod_sub_cate=s.cod_subcategori AND c.cod_categoria='$cod_categoria'";
         return $this->db->query($query)->result();
     }
- 
+
     function getSubcategoria($cod_sub_cate)
     {
         $query = "SELECT  

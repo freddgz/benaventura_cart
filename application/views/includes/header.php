@@ -111,12 +111,12 @@
                         </li>
                       <?php } ?>
                       <li>
-                        <a href="destinations.html">
+                        <a href="<?= base_url() ?>nosotros">
                           Nosotros
                         </a>
                       </li>
                       <li>
-                        <a href="destinations.html">
+                        <a href="<?= base_url() ?>contactanos">
                           Contactenos
                         </a>
                       </li>

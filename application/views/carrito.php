@@ -109,7 +109,7 @@
                     <div class="border-top-light mt-30 mb-20"></div>
                     <div class="p-4">
                         <div class="text-center">
-                            <a href="<?= base_url(); ?>reservas" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
+                            <a href="<?= base_url(); ?>reserva" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
                                 Tramitar Reserva
                             </a>
                         </div>

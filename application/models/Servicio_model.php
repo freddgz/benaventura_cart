@@ -185,6 +185,25 @@ class Servicio_model extends CI_Model
             return $result->row();
         }
     }
+
+
+    function searchByRegion($texto)
+    {
+        $query = "SELECT 
+        DISTINCT g.id_region, r.region 
+        FROM geo_servicios AS g
+        , regiones AS r
+        , provincias AS p
+        , comunas AS c 
+        WHERE g.id_region=r.id 
+        AND g.id_provincia=p.id 
+        AND g.id_comuna=c.id 
+        AND r.region 
+        LIKE '%" . $texto . "%'";
+        return $this->db->query($query)->result();
+    }
+
+
     function insert($info)
     {
         return $this->db->insert('agenda', $info);
