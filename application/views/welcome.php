@@ -21,11 +21,11 @@
           <div class="button-grid items-center">
 
             <div class="searchMenu-loc px-30 lg:py-20 lg:px-0 js-form-dd js-liverSearch" style="grid-column: span 2;">
-              <div data-x-dd-click="searchMenu-loc">
+              <div>
                 <h4 class="text-15 fw-500 ls-2 lh-16">Buscar</h4>
 
                 <div class="text-15 text-light-1 ls-2 lh-16">
-                  <input autocomplete="off" type="search" id="search" name="search" placeholder="Servicio..." class="js-search js-dd-focus" />
+                  <input autocomplete="off" class="js-search js-dd-focus" type="search" id="search" name="search" placeholder="Servicio, Destino, Aventura, etc" />
                 </div>
               </div>
 
@@ -608,9 +608,12 @@
     });
 
     document.getElementById("search").addEventListener("keyup", function() {
+      const target = document.querySelector(`[data-x-dd=searchMenu-loc]`)
+      target.classList.remove('-is-active')
       if (this.value == "") {
         $(".js-results").html("");
       } else {
+        target.classList.add('-is-active')
 
         $.ajax({
           type: 'POST',

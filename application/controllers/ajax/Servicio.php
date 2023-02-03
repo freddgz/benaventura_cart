@@ -352,7 +352,7 @@ class Servicio extends CI_Controller
                                     </a>
 
                                     <div class="flex-center size-20 ml-15 mr-15">
-                                        <div class="text-15 js-count">1</div>
+                                        <div class="text-15 js-count">' . $item_cart["adultos"] . '</div>
                                     </div>
 
                                     <a class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -379,7 +379,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["ninos_menores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -406,7 +406,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["ninos_mayores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -432,7 +432,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["adultos_mayores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -608,7 +608,15 @@ class Servicio extends CI_Controller
                     if (isset($_POST["rowid"])) {
                         $rowid = $_POST["rowid"];
                         $item_cart = $this->cart->get_item($rowid);
+                        $item_cart["price"] = $total;
                         $item_cart["item"]["fecha_reserva"] = $fecha_reserva;
+                        $item_cart["item"]["personas"] = $numero_personas;
+                        $item_cart["item"]["ninos_menores"] = $num_ninos_menores;
+                        $item_cart["item"]["ninos_mayores"] = $num_ninos_mayores;
+                        $item_cart["item"]["adultos"] = $num_adultos;
+                        $item_cart["item"]["adultos_mayores"] = $num_adultos_mayores;
+                        $item_cart["item"]["total"] = $total;
+
                         $cartitem_updated = $this->cart->update($item_cart);
                     }
                     echo json_encode(array(

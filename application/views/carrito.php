@@ -15,6 +15,7 @@
                     <div class="row y-gap-30">
                         <?php
                         // $cod_categoria = 'CAT000001';
+                        var_dump($this->cart->contents());
                         foreach ($this->cart->contents() as $row) {
                             $cod_servicio = $row['id'];
                             $rowid = $row['rowid'];
@@ -180,6 +181,13 @@
                 }
             });
         });
+
+        function reloadJs(src) {
+            src = $('script[src$="' + src + '"]').attr("src");
+            $('script[src$="' + src + '"]').remove();
+            $('<script/>').attr('src', src).appendTo('head');
+        }
+
         $('.btnEditar').on('click', function() {
             let rowid = $(this).data('rowid');
             $.ajax({
@@ -194,7 +202,9 @@
                     console.log('carrito/showEditCart', res);
                     $(".cont_edit").html(res.html).fadeIn("slow");
                     myModal.show();
-
+                    // reloadJs(baseURL + "assets/js/main.js");
+                    initialReveal();
+                    initComponents();
                     $('#fecha_dispon').daterangepicker({
                         "singleDatePicker": true,
                         "autoApply": true,
