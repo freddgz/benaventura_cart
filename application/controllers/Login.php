@@ -19,13 +19,13 @@ class Login extends BaseController
     public function index()
     {
         //$this->isLoggedIn();
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = "Login : " . PROYECTO;
         $this->loadViews("login", $this->global, "", NULL);
     }
     public function registro()
     {
         //$this->isLoggedIn();
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = "Registro : " . PROYECTO;
         $this->loadViews("registro", $this->global, "", NULL);
     }
 

@@ -21,7 +21,8 @@ class Reserva extends BaseController
      */
     public function index()
     {
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        if (empty($this->cart->contents())) redirect("/");
+        $this->global['pageTitle'] = "Reserva : " . PROYECTO;
         $data["regiones"] = $this->ubigeo_model->getRegiones();
         $this->loadViews("reserva", $this->global, $data, NULL);
     }

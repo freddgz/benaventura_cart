@@ -214,13 +214,13 @@
 
       ?>
         <div data-anim-child="slide-up delay-<?= $de; ?>" class="col-xl-<?= $amplitud; ?> col-md-4 col-sm-6">
-          <a href="<?= base_url() . "categoria/cat_aventura?destino=" . $row->id_region; ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
+          <a href="<?= base_url() . "categoria/cat_aventura?destino=" . $row->cod_destino; ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
             <div class="citiesCard__image ratio ratio-1:1">
               <img class="col-12 js-lazy" src="#" data-src="<?= SERVER_IMG ?>destinos/<?= $row->imagen; ?>" alt="image">
             </div>
             <div class="citiesCard__content px-30 py-30">
               <h4 class="text-26 fw-600 text-white"><?= $row->nombre; ?></h4>
-              <div class="text-15 text-white">1,714 properties</div>
+              <div class="text-15 text-white"><?= $row->cantidad_aventura ?> servicios</div>
             </div>
           </a>
 

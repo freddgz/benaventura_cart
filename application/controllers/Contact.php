@@ -16,7 +16,7 @@ class Contact extends BaseController
      */
     public function index()
     {
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = "Contacto : " . PROYECTO;
         $this->loadViews("contactanos", $this->global, NULL, NULL);
     }
 }

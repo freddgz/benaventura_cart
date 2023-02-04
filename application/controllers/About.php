@@ -16,7 +16,7 @@ class About extends BaseController
      */
     public function index()
     {
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = "Nosotros : " . PROYECTO;
         $this->loadViews("nosotros", $this->global, NULL, NULL);
     }
 }

@@ -74,7 +74,17 @@ class Servicio_model extends CI_Model
     }
     function getTop()
     {
-        $query = "SELECT * FROM destinos LIMIT 6";
+        $query = "SELECT
+                d.cod_destino,
+                d.id_region,
+                d.nombre,
+                d.imagen,
+                (select count(*) from geo_servicios g inner join servicios s on s.cod_servicio=g.cod_servicio where g.id_region=d.id_region) as cantidad,
+                (select count(*) from geo_servicios g inner join servicios s on s.cod_servicio=g.cod_servicio where g.id_region=d.id_region and s.cod_categoria = 'CAT000001') as cantidad_aventura,
+                (select count(*) from geo_servicios g inner join servicios s on s.cod_servicio=g.cod_servicio where g.id_region=d.id_region and s.cod_categoria='CAT000004') as cantidad_tour
+                FROM destinos d
+                order by cantidad_aventura desc
+                limit 6";
         return $this->db->query($query)->result();
     }
     function getAll_x_categoria($cod_categoria)

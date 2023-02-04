@@ -19,7 +19,8 @@ class Carrito extends BaseController
     public function index()
     {
 
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        if (empty($this->cart->contents())) redirect("/");
+        $this->global['pageTitle'] = "Carrito : " . PROYECTO;
         $this->loadViews("carrito", $this->global, "", NULL);
     }
     public function deleteCart()

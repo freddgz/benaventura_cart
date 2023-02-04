@@ -12,9 +12,25 @@ if ($total >= 1) {
 
     $page = 1;
 ?>
-    <section class="mt-90 layout-pt-md layout-pb-lg">
+    <section class="mt-40 sm:mt-60 layout-pt-md layout-pb-lg">
         <div class="container">
-            <div class="row y-gap-30">
+            <?php if (isset($destino)) : ?>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="relative d-flex">
+                            <img src="<?= SERVER_IMG ?>destinos/<?= $destino->imagen; ?>" alt="image" class="col-12 rounded-4">
+                            <div class="absolute z-2 px-50 py-60">
+                                <h1 class="text-50 fw-600 text-white"><?= $destino->nombre ?></h1>
+                                <!-- <div class="text-white">Explore deals, travel guides and things to do in London</div> -->
+                            </div>
+                            <!-- <div class="absolute d-flex justify-end items-end col-12 h-full z-1 px-10 py-10">
+                            <button class="button -md -blue-1 bg-white text-dark-1 text-14 fw-500">See All 90 Photos</button>
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="row y-gap-30 mt-0">
                 <div class="col-xl-3 col-lg-4 lg:d-none">
                     <aside class="sidebar y-gap-40">
                         <div class="sidebar__item -no-border">

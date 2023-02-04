@@ -15,7 +15,6 @@
                     <div class="row y-gap-30">
                         <?php
                         // $cod_categoria = 'CAT000001';
-                        var_dump($this->cart->contents());
                         foreach ($this->cart->contents() as $row) {
                             $cod_servicio = $row['id'];
                             $rowid = $row['rowid'];
