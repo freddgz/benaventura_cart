@@ -54,6 +54,7 @@ class CI_Cart
 	public $image;
 	/**
 	 * cod_servicio
+	 * cod_cliente
 	 * descripcion
 	 * personas
 	 * fecha_reserva

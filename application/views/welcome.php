@@ -16,17 +16,31 @@
         </h1>
         <p data-anim-child="slide-up delay-5" class="mt-20">Experimente los diversos y emocionantes paquetes de viajes y excursiones y haga reservas de hotel,<br class="lg:d-none"> encuentre paquetes de vacaciones, busque hoteles baratos y eventos</p>
 
+
         <div class="mt-40 mainSearch -w-900 bg-white px-10 py-10 lg:px-20 lg:pt-5 lg:pb-20 rounded-100">
           <div class="button-grid items-center">
-            <div class="searchMenu-loc px-30 lg:py-20 lg:px-0 js-form-dd js-liverSearch">
-              <div data-x-dd-click="searchMenu-loc">
+
+            <div class="searchMenu-loc px-30 lg:py-20 lg:px-0 js-form-dd js-liverSearch" style="grid-column: span 2;">
+              <div>
                 <h4 class="text-15 fw-500 ls-2 lh-16">Buscar</h4>
 
                 <div class="text-15 text-light-1 ls-2 lh-16">
-                  <input autocomplete="off" type="search" id="search" name="search" placeholder="Servicio..." />
+                  <input autocomplete="off" class="js-search js-dd-focus" type="search" id="search" name="search" placeholder="Servicio, Destino, Aventura, etc" />
                 </div>
               </div>
+
+              <div class="searchMenu-loc__field shadow-2 js-popup-window" data-x-dd="searchMenu-loc" data-x-dd-toggle="-is-active">
+                <div class="bg-white px-30 py-30 sm:px-0 sm:py-15 rounded-4">
+                  <div class="y-gap-5 js-results">
+
+                  </div>
+                </div>
+              </div>
+
+
             </div>
+
+
             <!-- <div class="px-30 lg:py-20 lg:px-0">
               <div>
                 <h4 class="text-15 fw-500 ls-2 lh-16">Desde - Hasta</h4>
@@ -200,13 +214,18 @@
 
       ?>
         <div data-anim-child="slide-up delay-<?= $de; ?>" class="col-xl-<?= $amplitud; ?> col-md-4 col-sm-6">
-          <a href="#" class="citiesCard -type-3 d-block h-full rounded-4 ">
+          <a href="<?= base_url() . "categoria/cat_aventura?destino=" . $row->cod_destino; ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
             <div class="citiesCard__image ratio ratio-1:1">
               <img class="col-12 js-lazy" src="#" data-src="<?= SERVER_IMG ?>destinos/<?= $row->imagen; ?>" alt="image">
             </div>
             <div class="citiesCard__content px-30 py-30">
               <h4 class="text-26 fw-600 text-white"><?= $row->nombre; ?></h4>
-              <div class="text-15 text-white">1,714 properties</div>
+              <?php if ($row->cantidad_aventura > 0) : ?>
+                <div class="text-15 text-white"><?= $row->cantidad_aventura ?> Aventuras</div>
+              <?php endif ?>
+              <?php if ($row->cantidad_tour > 0) : ?>
+                <div class="text-15 text-white"><?= $row->cantidad_tour ?> Tours</div>
+              <?php endif ?>
             </div>
           </a>
 
@@ -589,8 +608,31 @@
 
     $('#btnSearch').click(function() {
       let texto = $("#search").val();
-      window.location = `${baseURL}categoria/cat_aventura/${texto}`;
+      window.location = `${baseURL}categoria/cat_aventura?search=${texto}`;
 
     });
+
+    document.getElementById("search").addEventListener("keyup", function() {
+      const target = document.querySelector(`[data-x-dd=searchMenu-loc]`)
+      target.classList.remove('-is-active')
+      if (this.value == "") {
+        $(".js-results").html("");
+      } else {
+        target.classList.add('-is-active')
+
+        $.ajax({
+          type: 'POST',
+          url: baseURL + 'ajax/servicio/buscar',
+          dataType: 'json',
+          data: "texto=" + this.value,
+          beforeSend: function(objeto) {
+            $(".js-results").html('<div class="svg-preloader"></div>');
+          },
+          success: function(res) {
+            $(".js-results").html(res.html);
+          }
+        });
+      }
+    })
   });
 </script>

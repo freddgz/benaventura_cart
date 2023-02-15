@@ -12,15 +12,31 @@ if ($total >= 1) {
 
     $page = 1;
 ?>
-    <section class="mt-90 layout-pt-md layout-pb-lg">
+    <section class="mt-40 sm:mt-60 layout-pt-md layout-pb-lg">
         <div class="container">
-            <div class="row y-gap-30">
+            <?php if (isset($destino)) : ?>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="relative d-flex">
+                            <img src="<?= SERVER_IMG ?>destinos/<?= $destino->imagen; ?>" alt="image" class="col-12 rounded-4">
+                            <div class="absolute z-2 px-50 py-60">
+                                <h1 class="text-50 fw-600 text-white"><?= $destino->nombre ?></h1>
+                                <!-- <div class="text-white">Explore deals, travel guides and things to do in London</div> -->
+                            </div>
+                            <!-- <div class="absolute d-flex justify-end items-end col-12 h-full z-1 px-10 py-10">
+                            <button class="button -md -blue-1 bg-white text-dark-1 text-14 fw-500">See All 90 Photos</button>
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+            <div class="row y-gap-30 mt-0">
                 <div class="col-xl-3 col-lg-4 lg:d-none">
                     <aside class="sidebar y-gap-40">
                         <div class="sidebar__item -no-border">
                             <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
                             <div class="form-input ">
-                                <input type="text" id="filtro" name="filtro" value="<?= $search ?>">
+                                <input type="text" id="filtro" name="filtro" value="<?= $filtro['search'] ?>">
                                 <label class="lh-1 text-16 text-light-1">Filtro</label>
                             </div>
                         </div>
@@ -56,7 +72,7 @@ if ($total >= 1) {
                                 ?>
                             </div>
                         </div>
-                        <div class="sidebar__item -no-border">
+                        <div class="sidebar__item ">
                             <h5 class="text-18 fw-500 mb-10">Destinos</h5>
                             <div class="sidebar-checkbox">
                                 <?php
@@ -66,7 +82,7 @@ if ($total >= 1) {
                                         <div class="col-auto">
                                             <div class="d-flex items-center">
                                                 <div class="form-checkbox ">
-                                                    <input type="checkbox" class="common_selector subcategoria" value="<?= $row->id_region; ?>">
+                                                    <input type="checkbox" class="common_selector destinos" value="<?= $row->id_region; ?>">
                                                     <div class="form-checkbox__mark">
                                                         <div class="form-checkbox__icon icon-check"></div>
                                                     </div>
@@ -88,31 +104,6 @@ if ($total >= 1) {
                             </div>
                         </div>
 
-                        <!-- <div class="sidebar__item">
-                            <h5 class="text-18 fw-500 mb-10">Destinos</h5>
-                            <div class="sidebar-checkbox">
-
-                                <div class="row y-gap-10 items-center justify-between">
-                                    <div class="col-auto">
-
-                                        <div class="d-flex items-center">
-                                            <div class="form-checkbox ">
-                                                <input type="checkbox" name="name">
-                                                <div class="form-checkbox__mark">
-                                                    <div class="form-checkbox__icon icon-check"></div>
-                                                </div>
-                                            </div>
-
-                                            <div class="text-15 ml-10">Free cancellation</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="text-15 text-light-1">92</div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div> -->
 
                         <div class="sidebar__item pb-30">
                             <h5 class="text-18 fw-500 mb-10">Precios</h5>
@@ -123,13 +114,13 @@ if ($total >= 1) {
                                         <div class="d-flex justify-between mb-20">
                                             <div class="text-15 text-dark-1">
                                                 <?php $costo_maximo = max($costos); ?>
-                                                <span id="price_show">0.000 - <?= $costo_maximo ?></span>
+                                                <span class="price_show">0.000 - <?= $costo_maximo ?></span>
                                             </div>
                                         </div>
                                         <div class="px-5">
-                                            <input type="hidden" id="hidden_minimum_price" value="0" />
-                                            <input type="hidden" id="hidden_maximum_price" value="<?= $costo_maximo ?>" />
-                                            <div id="rango_costo"></div>
+                                            <input type="hidden" class="hidden_minimum_price" value="0" />
+                                            <input type="hidden" class="hidden_maximum_price" value="<?= $costo_maximo ?>" />
+                                            <div class="rango_costo"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -171,9 +162,9 @@ if ($total >= 1) {
                             <div class="text-18"><span class="fw-500" id="total"></span> Resultados</div>
                         </div>
 
-                        <!-- <div class="col-auto">
+                        <div class="col-auto">
                             <div class="row x-gap-20 y-gap-20">
-                                <div class="col-auto">
+                                <!-- <div class="col-auto">
                                     <button class="button -blue-1 h-40 px-20 rounded-100 bg-blue-1-05 text-15 text-blue-1">
                                         <i class="icon-list text-14 mr-10"></i>
                                         Lista
@@ -185,7 +176,7 @@ if ($total >= 1) {
                                         <i class="icon-up-down text-14 mr-10"></i>
                                         Map
                                     </button>
-                                </div>
+                                </div> -->
 
                                 <div class="col-auto d-none lg:d-block">
                                     <button data-x-click="filterPopup" class="button -blue-1 h-40 px-20 rounded-100 bg-blue-1-05 text-15 text-blue-1">
@@ -194,7 +185,7 @@ if ($total >= 1) {
                                     </button>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
 
                     <div class="filterPopup bg-white" data-x="filterPopup" data-x-toggle="-is-active">
@@ -202,344 +193,123 @@ if ($total >= 1) {
                             <div data-x-click="filterPopup" class="-icon-close">
                                 <i class="icon-close"></i>
                             </div>
-
+                            <!-- sidebar__item -->
                             <div class="sidebar__item -no-border">
-                                <h5 class="text-18 fw-500 mb-10">Category Types</h5>
-                                <div class="sidebar-checkbox">
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Tours</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">92</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Attractions </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">45</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Day Trips</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">21</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Outdoor Activities </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">78</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Concerts &amp; Shows </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">679</div>
-                                        </div>
-                                    </div>
-
+                                <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
+                                <div class="form-input ">
+                                    <input type="text" id="filtro" name="filtro" value="<?= $filtro['search'] ?>">
+                                    <label class="lh-1 text-16 text-light-1">Filtro</label>
                                 </div>
                             </div>
-
-                            <div class="sidebar__item">
-                                <h5 class="text-18 fw-500 mb-10">Other</h5>
+                            <div class="sidebar__item -no-border">
+                                <h5 class="text-18 fw-500 mb-10">Categorias</h5>
+                                <input type="hidden" name="cod_categoria" id="cod_categoria" value="<?= $categoria->cod_categoria ?>">
                                 <div class="sidebar-checkbox">
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
+                                    <?php
+                                    foreach ($subcategorias as $sub) {
+                                    ?>
+                                        <div class="row y-gap-10 items-center justify-between">
+                                            <div class="col-auto">
+                                                <div class="d-flex items-center">
+                                                    <div class="form-checkbox ">
+                                                        <input type="checkbox" class="common_selector subcategoria" value="<?= $sub->cod_sub_cate; ?>">
+                                                        <div class="form-checkbox__mark">
+                                                            <div class="form-checkbox__icon icon-check"></div>
+                                                        </div>
                                                     </div>
+                                                    <div class="text-15 ml-10"><?= $sub->nombre; ?></div>
                                                 </div>
-
-                                                <div class="text-15 ml-10">Free cancellation</div>
-
                                             </div>
-
+                                            <div class="col-auto">
+                                                <div class="text-15 text-light-1">
+                                                    <?php
+                                                    //echo print_r(array_search($cod_sub, $subcategorias));
+                                                    ?>
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">92</div>
-                                        </div>
-                                    </div>
-
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
-
+                            <div class="sidebar__item ">
+                                <h5 class="text-18 fw-500 mb-10">Destinos</h5>
+                                <div class="sidebar-checkbox">
+                                    <?php
+                                    foreach ($destinos as $row) {
+                                    ?>
+                                        <div class="row y-gap-10 items-center justify-between">
+                                            <div class="col-auto">
+                                                <div class="d-flex items-center">
+                                                    <div class="form-checkbox ">
+                                                        <input type="checkbox" class="common_selector destinos" value="<?= $row->id_region; ?>">
+                                                        <div class="form-checkbox__mark">
+                                                            <div class="form-checkbox__icon icon-check"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-15 ml-10"><?= $row->nombre; ?></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <div class="text-15 text-light-1">
+                                                    <?php
+                                                    //echo print_r(array_search($cod_sub, $subcategorias));
+                                                    ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                             <div class="sidebar__item pb-30">
-                                <h5 class="text-18 fw-500 mb-10">Price</h5>
+                                <h5 class="text-18 fw-500 mb-10">Precios</h5>
                                 <div class="row x-gap-10 y-gap-30">
                                     <div class="col-12">
-                                        <div class="js-price-rangeSlider">
+                                        <div class="">
                                             <div class="text-14 fw-500"></div>
-
                                             <div class="d-flex justify-between mb-20">
                                                 <div class="text-15 text-dark-1">
-                                                    <span class="js-lower"></span>
-                                                    -
-                                                    <span class="js-upper"></span>
+                                                    <?php $costo_maximo = max($costos); ?>
+                                                    <span class="price_show">0.000 - <?= $costo_maximo ?></span>
                                                 </div>
                                             </div>
-
                                             <div class="px-5">
-                                                <div class="js-slider"></div>
+                                                <input type="hidden" class="hidden_minimum_price" value="0" />
+                                                <input type="hidden" class="hidden_maximum_price" value="<?= $costo_maximo ?>" />
+                                                <div class="rango_costo"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="sidebar__item">
-                                <h5 class="text-18 fw-500 mb-10">Duration</h5>
+                                <h5 class="text-18 fw-500 mb-10">Duracion <?= $duraciones["4"]["hasta"] ?></h5>
                                 <div class="sidebar-checkbox">
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
+                                    <?php foreach ($duraciones as $key => $row) { ?>
+                                        <div class="row y-gap-10 items-center justify-between">
+                                            <div class="col-auto">
+                                                <div class="d-flex items-center">
+                                                    <div class="form-checkbox ">
+                                                        <input type="checkbox" class="common_selector duracion" value="<?= $key ?>">
+                                                        <div class="form-checkbox__mark">
+                                                            <div class="form-checkbox__icon icon-check"></div>
+                                                        </div>
                                                     </div>
+                                                    <div class="text-15 ml-10"><?= $row["nombre"] ?></div>
                                                 </div>
-
-                                                <div class="text-15 ml-10">Up to 1 hour</div>
 
                                             </div>
 
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">92</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">1 to 4 hours </div>
-
+                                            <div class="col-auto">
+                                                <!-- <div class="text-15 text-light-1">92</div> -->
                                             </div>
-
                                         </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">45</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">4 hours to 1 day </div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">21</div>
-                                        </div>
-                                    </div>
-
+                                    <?php } ?>
                                 </div>
                             </div>
-
-                            <div class="sidebar__item">
-                                <h5 class="text-18 fw-500 mb-10">Languages</h5>
-                                <div class="sidebar-checkbox">
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">English</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">92</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Spanish</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">45</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">French</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">45</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" name="name">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="text-15 ml-10">Turkish</div>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">21</div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
                         </aside>
                     </div>
 
@@ -602,6 +372,11 @@ if ($total >= 1) {
                 el.checked = true;
             // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
         });
+        document.querySelectorAll(".destinos").forEach((el, idx) => {
+            if (el.value == '<?= $filtro["destino"] ?>')
+                el.checked = true;
+            // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
+        });
         filter_data();
 
         function filter_data() {
@@ -609,11 +384,12 @@ if ($total >= 1) {
             $('#contenData').html('<div id="loading" style="" ></div>');
             // var action = 'fetch_data';
             var filtro = $('#filtro').val();
-            var precio_minimo = $('#hidden_minimum_price').val();
-            var precio_maximo = $('#hidden_maximum_price').val();
+            var precio_minimo = $('.hidden_minimum_price').val();
+            var precio_maximo = $('.hidden_maximum_price').val();
             let cod_categoria = $("#cod_categoria").val();
             let cod_sub_categoria = get_filter('subcategoria');
             let duraciones = get_filter('duracion');
+            let destinos = get_filter('destinos');
             // var ram = get_filter('ram');
             // var storage = get_filter('storage');
             $.ajax({
@@ -626,6 +402,7 @@ if ($total >= 1) {
                     cod_sub_categoria: cod_sub_categoria,
                     cod_categoria: cod_categoria,
                     duraciones: duraciones,
+                    destinos: destinos,
                     texto: filtro,
                     // storage: storage
                 },
@@ -657,9 +434,9 @@ if ($total >= 1) {
             values: [0.000, costo_maximo],
             // step: 500,
             stop: function(event, ui) {
-                $('#price_show').html(ui.values[0] + ' - ' + ui.values[1]);
-                $('#hidden_minimum_price').val(ui.values[0]);
-                $('#hidden_maximum_price').val(ui.values[1]);
+                $('.price_show').html(ui.values[0] + ' - ' + ui.values[1]);
+                $('.hidden_minimum_price').val(ui.values[0]);
+                $('.hidden_maximum_price').val(ui.values[1]);
                 filter_data();
             }
         });

@@ -9,6 +9,7 @@ class Servicio extends CI_Controller
         parent::__construct();
         $this->load->library('util');
         $this->load->model('servicio_model');
+        $this->load->model('categoria_model');
         // $this->isLoggedIn();
     }
 
@@ -18,6 +19,7 @@ class Servicio extends CI_Controller
         $servicio = $this->servicio_model->get($cod_servicio);
         $total = $_POST["total"];
         $item = array(
+            "cod_cliente" => $_POST["cod_cliente"],
             "descripcion" => $_POST["descripcion"],
             "personas" => $_POST["personas"],
             "fecha_reserva" => $_POST["fecha_reserva"],
@@ -35,7 +37,6 @@ class Servicio extends CI_Controller
             'image' =>  $servicio->img_portada,
             'item' => $item,
         ];
-
 
         if ($this->cart->insert($cast))
             $this->showCart();
@@ -60,10 +61,11 @@ class Servicio extends CI_Controller
         foreach ($carts as $item) {
             $total +=  $item['subtotal'];
             $recuento++;
-            $output .= " <div class='px-2 px-md-3 py-2 py-md-1'>
-                <div class='media p-2 p-md-3 row'>
-                <div class=' col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3'>
-                   <img class='img-fluid rounded-pill' src='" . SERVER_IMG . "portada/" . $item["image"] . "' alt='Image Description'> 
+            $output .= " <div class='cart-item'>
+                <div class='row p-2 p-md-3'>
+                <div class=' col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3'
+                    style='display: flex; align-items: center; justify-content: center;'>
+                   <img class='img-fluid rounded-pill' style='height: 4rem; object-fit: cover;'  src='" . SERVER_IMG . "portada/" . $item["image"] . "' > 
                 </div>
                 <div class=' col-9 media-body position-relative pl-md-1'>
                     <div class='d-flex justify-content-between align-items-start mb-2 mb-md-3'>
@@ -76,14 +78,6 @@ class Servicio extends CI_Controller
                 </div>
                 </div>
             </div>";
-            // $array[$cart['rowid']] = [
-            //     'id' => $cart['id'],
-            //     'qty' => $cart['qty'],
-            //     'price' => $this->cart->format_number($cart['price']),
-            //     'name' => $cart['name'],
-            //     'subtotal' => $this->cart->format_number($cart['subtotal']),
-            //     'rowid' => $cart['rowid']
-            // ];
         }
 
         $output .= "</div>
@@ -104,6 +98,59 @@ class Servicio extends CI_Controller
             "status" => true,
             "recuento" => $recuento,
             "total" => $total,
+            "html" => $output,
+        ));
+    }
+
+    public function buscar()
+    {
+        $texto = $_POST["texto"];
+        $output = "";
+        $regiones = $this->servicio_model->searchByRegion($texto);
+
+        if (sizeof($regiones) > 0) {
+            $output .= "<h6 class='px-20'>Destinos</h6><hr>";
+
+            foreach ($regiones as $key => $row) {
+                $output .= "
+                    <div>
+                      <a href='" . base_url() . "categoria/cat_aventura?destino=$row->id_region' class='-link d-block col-12 text-left rounded-4 px-20 py-15 js-search-option'>
+                        <div class='d-flex'>
+                          <div class='icon-location-2 text-light-1 text-20 pt-4'></div>
+                          <div class='ml-10'>
+                            <div class='text-15 lh-12 fw-500 js-search-option-target'>$row->region</div>
+                            <div class='text-14 lh-12 text-light-1 mt-5'>Región</div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>";
+            }
+        }
+        $categorias = $this->categoria_model->getAll_ConServicio();
+
+        foreach ($categorias as $key => $row) {
+            $servicios = $this->categoria_model->searchServicio($row->cod_categoria, $texto);
+
+            if (sizeof($servicios) > 0) {
+                $output .= "<h6 class='px-20'>$row->nombre</h6><hr>";
+                foreach ($servicios as $key => $row2) {
+                    $output .= "
+                    <div>
+                      <a href='" . base_url() . "detalleTour/$row2->cod_servicio' class='-link d-block col-12 text-left rounded-4 px-20 py-15 js-search-option'>
+                        <div class='d-flex'>
+                          <div class='icon-globe text-light-1 text-20 pt-4'></div>
+                          <div class='ml-10'>
+                            <div class='text-15 lh-12 fw-500 js-search-option-target'>$row2->titulo</div>
+                            <div class='text-14 lh-12 text-light-1 mt-5'>$row->nombre</div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>";
+                }
+            }
+        }
+        echo json_encode(array(
+            "status" => true,
             "html" => $output,
         ));
     }
@@ -298,7 +345,7 @@ class Servicio extends CI_Controller
                                     </a>
 
                                     <div class="flex-center size-20 ml-15 mr-15">
-                                        <div class="text-15 js-count">1</div>
+                                        <div class="text-15 js-count">' . $item_cart["adultos"] . '</div>
                                     </div>
 
                                     <a class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -325,7 +372,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["ninos_menores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -352,7 +399,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["ninos_mayores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -378,7 +425,7 @@ class Servicio extends CI_Controller
                                         </a>
 
                                         <div class="flex-center size-20 ml-15 mr-15">
-                                            <div class="text-15 js-count">0</div>
+                                            <div class="text-15 js-count">' . $item_cart["adultos_mayores"] . '</div>
                                         </div>
 
                                         <a href="javascript:void(0);" class="button -outline-blue-1 text-blue-1 size-38 rounded-4 js-up">
@@ -554,7 +601,15 @@ class Servicio extends CI_Controller
                     if (isset($_POST["rowid"])) {
                         $rowid = $_POST["rowid"];
                         $item_cart = $this->cart->get_item($rowid);
+                        $item_cart["price"] = $total;
                         $item_cart["item"]["fecha_reserva"] = $fecha_reserva;
+                        $item_cart["item"]["personas"] = $numero_personas;
+                        $item_cart["item"]["ninos_menores"] = $num_ninos_menores;
+                        $item_cart["item"]["ninos_mayores"] = $num_ninos_mayores;
+                        $item_cart["item"]["adultos"] = $num_adultos;
+                        $item_cart["item"]["adultos_mayores"] = $num_adultos_mayores;
+                        $item_cart["item"]["total"] = $total;
+
                         $cartitem_updated = $this->cart->update($item_cart);
                     }
                     echo json_encode(array(
@@ -580,80 +635,86 @@ class Servicio extends CI_Controller
     {
         $cod_categoria = $_POST["cod_categoria"];
         $cod_sub_categoria = isset($_POST["cod_sub_categoria"]) ? implode("','", $_POST["cod_sub_categoria"]) : "";
+        $destinos = isset($_POST["destinos"]) ? implode("','", $_POST["destinos"]) : "";
         $duraciones = isset($_POST["duraciones"]) ? $_POST["duraciones"] : [];
         $precio_minimo = $_POST["precio_minimo"];
         $precio_maximo = $_POST["precio_maximo"];
         $texto = $_POST["texto"];
         $start = 0;
-        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
+        $resultado = $this->servicio_model->getAll($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos);
         $servicios = $resultado["data"];
-        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto);
+        $total = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto, $destinos);
 
         // $data["total"] = $this->servicio_model->getAllTotal($cod_categoria, $cod_sub_categoria, $start);
         $output = "";
-        foreach ($servicios as $key => $row) {
-            $geo = $this->servicio_model->getGeo_x_Servicio($row->cod_servicio);
-            $row->geo = isset($geo) ? $geo->region . ", " . $geo->provincia : "No definido.";
+        if ($total > 0) {
+            foreach ($servicios as $key => $row) {
+                $geo = $this->servicio_model->getGeo_x_Servicio($row->cod_servicio);
+                $row->geo = isset($geo) ? $geo->region . ", " . $geo->provincia : "No definido.";
 
 
-            $output .= "<div class='col-lg-4 col-sm-6'>
-            <a href='" . base_url() . "detalleTour/" . $row->cod_servicio . "' class='tourCard -type-1 rounded-4'>
-                <div class='tourCard__image'>
-                    <div class='cardImage ratio ratio-1:1'>
-                        <div class='cardImage__content'>
-                            <img class='rounded-4 col-12 js-lazy loaded' src='" . SERVER_IMG . "portada/" . $row->img_portada . "' alt='image' data-ll-status='loaded'>
-                        </div>
-                        <div class='cardImage__wishlist'>
-                            <button class='button -blue-1 bg-white size-30 rounded-full shadow-2'>
-                                <i class='icon-heart text-12'></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class='tourCard__content mt-10'>
-                    <div class='d-flex items-center lh-14 mb-5'>
-                        <div class='text-14 text-light-1'>
-                            $row->duracion $row->medida_cuando
-                        </div>
-                        <div class='size-3 bg-light-1 rounded-full ml-10 mr-10'></div>
-                        <div class='text-14 text-light-1'>
-                            $row->cod_categoria
-                        </div>
-                    </div>
-                    <h4 class='tourCard__title text-dark-1 text-18 lh-16 fw-500'>
-                        <span>$row->titulo</span>
-                    </h4>
-                    <p class='text-light-1 lh-14 text-14 mt-5'>
-                        $row->geo
-                    </p>
-                    <div class='row justify-between items-center pt-15'>
-                        <div class='col-auto'>
-                            <div class='d-flex items-center'>
-                                <div class='d-flex items-center x-gap-5'>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                    <div class='icon-star text-yellow-1 text-10'></div>
-                                </div>
-                                <div class='text-14 text-light-1 ml-10'>
-                                    3,014 reviews
-                                </div>
+                $output .= "<div class='col-lg-4 col-sm-6'>
+                <a href='" . base_url() . "detalleTour/" . $row->cod_servicio . "' class='tourCard -type-1 rounded-4'>
+                    <div class='tourCard__image'>
+                        <div class='cardImage ratio ratio-1:1'>
+                            <div class='cardImage__content'>
+                                <img class='rounded-4 col-12 js-lazy loaded' src='" . SERVER_IMG . "portada/" . $row->img_portada . "' alt='image' data-ll-status='loaded'>
+                            </div>
+                            <div class='cardImage__wishlist'>
+                                <button class='button -blue-1 bg-white size-30 rounded-full shadow-2'>
+                                    <i class='icon-heart text-12'></i>
+                                </button>
                             </div>
                         </div>
-                        <div class='col-auto'>
+                    </div>
+                    <div class='tourCard__content mt-10'>
+                        <div class='d-flex items-center lh-14 mb-5'>
                             <div class='text-14 text-light-1'>
-                                From
-                                <span class='text-16 fw-500 text-dark-1'>$
-                                    $row->costo
-                                </span>
+                                $row->duracion $row->medida_cuando
+                            </div>
+                            <div class='size-3 bg-light-1 rounded-full ml-10 mr-10'></div>
+                            <div class='text-14 text-light-1'>
+                                $row->cod_categoria
+                            </div>
+                        </div>
+                        <h4 class='tourCard__title text-dark-1 text-18 lh-16 fw-500'>
+                            <span>$row->titulo</span>
+                        </h4>
+                        <p class='text-light-1 lh-14 text-14 mt-5'>
+                            $row->geo
+                        </p>
+                        <div class='row justify-between items-center pt-15'>
+                            <div class='col-auto'>
+                                <div class='d-flex items-center'>
+                                    <div class='d-flex items-center x-gap-5'>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                        <div class='icon-star text-yellow-1 text-10'></div>
+                                    </div>
+                                    <div class='text-14 text-light-1 ml-10'>
+                                        3,014 reviews
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-auto'>
+                                <div class='text-14 text-light-1'>
+                                    From
+                                    <span class='text-16 fw-500 text-dark-1'>$
+                                        $row->costo
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>";
+                </a>
+            </div>";
+            }
+        } else {
+            $output .= "No hay resultados con estos filtros";
         }
+
         $json = array(
             "query" => $resultado["query"],
             "total" => $total,

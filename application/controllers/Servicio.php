@@ -10,6 +10,8 @@ class Servicio extends BaseController
     {
         parent::__construct();
         $this->load->model('servicio_model');
+        $this->load->model('destino_model');
+        $this->load->library('util');
     }
 
     /**
@@ -20,7 +22,22 @@ class Servicio extends BaseController
     }
     public function categoriaSearch($cod_categoria, $s)
     {
+    }
+    public function categoria($cod_categoria)
+    {
+        // echo "cod_categoria: $cod_categoria";
+        // echo "id_region: " . $_GET["id_region"];
+        $s = isset($_GET["search"]) ? $_GET["search"] : "";
+        $cod_destino =   ""; //cod_destino
 
+        $this->global['pageTitle'] = "Servicios : " . PROYECTO;
+        if (isset($_GET["destino"])) {
+            $destino = $this->destino_model->get($_GET["destino"]);
+            $data["destino"] = $destino;
+            $cod_destino = $destino->id_region;
+            $this->global['pageTitle'] = $destino->nombre . " : " . PROYECTO;
+        }
+        // exit();
         $filtro_subcategoria = "";
         $filtro_categoria = "";
         $cod_categoria = strtolower($cod_categoria);
@@ -42,24 +59,21 @@ class Servicio extends BaseController
         $filtros = array();
         $filtros["categoria"] = $filtro_categoria;
         $filtros["subcategoria"] = $filtro_subcategoria;
+        $filtros["search"] = $s;
+        $filtros["destino"] = $cod_destino;
         $data["filtro"] = $filtros;
-        $data["search"] = $s;
         $data["duraciones"] = ARRAY_DURACION;
         $data["destinos"] = $this->servicio_model->getTop();
         $start = 0;
         $servicios = $this->servicio_model->getAllClean($filtro_categoria, $start);
         $data["servicios"] = $servicios;
         $data["total"] =  sizeof($servicios);
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
         $this->loadViews("servicios_filtro", $this->global, $data, NULL);
-    }
-    public function categoria($cod_categoria)
-    {
-        $this->categoriaSearch($cod_categoria, "");
     }
     public function servicio($cod_servicio)
     {
-        $data["servicio"] = $this->servicio_model->get($cod_servicio);
+        $servicio = $this->servicio_model->get($cod_servicio);
+        $data["servicio"] = $servicio;
         $data["restriccion"] = $this->servicio_model->getRestriccion($cod_servicio);
         $data["disponibilidad"] = $this->servicio_model->getDisponibilidad($cod_servicio);
         $data["itinerarios"] = $this->servicio_model->getItinerarios($cod_servicio);
@@ -68,7 +82,12 @@ class Servicio extends BaseController
         $data["incluidos"] = $this->servicio_model->getIncluidos($cod_servicio);
         $data["excluidos"] = $this->servicio_model->getNoIncluidos($cod_servicio);
 
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = $servicio->titulo . " : " . PROYECTO;
+        $this->loadViews("servicio", $this->global, $data, NULL);
+    }
+    public function destino($cod_destino)
+    {
+        $this->global['pageTitle'] = "Destino : " . PROYECTO;
         $this->loadViews("servicio", $this->global, $data, NULL);
     }
 }

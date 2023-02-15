@@ -27,7 +27,7 @@ class Welcome extends BaseController
         }
         $data["categorias"] = $categorias;
         $data["servicios_top"] = $this->servicio_model->getTop();
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        $this->global['pageTitle'] = "Inicio : " . PROYECTO;
         $this->loadViews("welcome", $this->global, $data, NULL);
     }
 }

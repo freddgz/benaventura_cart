@@ -25,7 +25,7 @@
                             <div class="col-12" id="li_cesta_<?= $rowid; ?>">
                                 <div class="border-light rounded-4">
                                     <div class="row x-gap-20 y-gap-20">
-                                        <div class="col-md-auto">
+                                        <div class="col-md-auto p-4">
                                             <div class="cardImage ratio ratio-1:1 w-180 md:w-1/1 rounded-4">
                                                 <div class="cardImage__content">
                                                     <img class="rounded-4 col-12 js-lazy" src="#" data-src="<?= SERVER_IMG; ?>portada/<?= $row['image']; ?>" alt="image">
@@ -37,30 +37,32 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md">
+                                        <div class="col-md px-24">
                                             <p class="text-14 lh-14 mb-5">6+ hours</p>
                                             <h3 class="text-18 lh-16 fw-500"><?= ucfirst($row['name']); ?></h3>
                                             <p class="text-14 lh-14 mt-5"><?= ucfirst(mb_strtolower($this->util->limitar_cadena($item['descripcion'], 90, "..ver mas"))); ?></p>
 
-                                            <div class="text-14 lh-15 fw-500 mt-20"><i class="icon-calendar text-12"></i>
+                                            <div class="text-14 lh-15 fw-500 mt-10"><i class="icon-calendar text-12"></i>
                                                 <?= $this->util->obtener_fecha_format_text($item['fecha_reserva']); ?>
                                             </div>
-                                            <?php if ($item['ninos_menores'] !== '0') { ?>
-                                                <div class="text-14 lh-15 fw-500"><?php echo $item['ninos_menores']; ?> Infantes</div>
-                                            <?php } ?>
-                                            <?php if ($item['ninos_mayores'] !== '0') { ?>
-                                                <div class="text-14 lh-15 fw-500"><?php echo $item['ninos_mayores']; ?> Niños</div>
-                                            <?php } ?>
-                                            <?php if ($item['adultos'] !== '0') { ?>
-                                                <div class="text-14 lh-15 fw-500"><?php echo $item['adultos']; ?> Adultos</div>
-                                            <?php } ?>
-                                            <?php if ($item['adultos_mayores'] !== '0') { ?>
-                                                <div class="text-14 lh-15 fw-500"><?php echo $item['adultos_mayores']; ?> Adultos Mayores</div>
-                                            <?php } ?>
-                                            <div class="text-14 text-green-2 fw-500 lh-15 mt-5">Free cancellation</div>
+                                            <div class="text-14 lh-15 fw-500">
+                                                <?php if ($item['ninos_menores'] !== '0') { ?>
+                                                    <?php echo $item['ninos_menores']; ?> Infantes /
+                                                <?php } ?>
+                                                <?php if ($item['ninos_mayores'] !== '0') { ?>
+                                                    <?php echo $item['ninos_mayores']; ?> Niños /
+                                                <?php } ?>
+                                                <?php if ($item['adultos'] !== '0') { ?>
+                                                    <?php echo $item['adultos']; ?> Adultos /
+                                                <?php } ?>
+                                                <?php if ($item['adultos_mayores'] !== '0') { ?>
+                                                    <?php echo $item['adultos_mayores']; ?> Adultos Mayores /
+                                                <?php } ?>
+                                            </div>
+                                            <!-- <div class="text-14 text-green-2 fw-500 lh-15 mt-5">Free cancellation</div> -->
                                         </div>
 
-                                        <div class="col-md-auto md:text-left p-4">
+                                        <div class="col-md-auto md:text-left px-24">
                                             <div class="d-flex ">
                                                 <button type="button" class="btnEditar btn btn-sm btn-icon rounded-circle text-warning" data-rowid="<?= $rowid ?>">
                                                     <span class="icon-edit font-size-20"></span>
@@ -109,7 +111,7 @@
                     <div class="border-top-light mt-30 mb-20"></div>
                     <div class="p-4">
                         <div class="text-center">
-                            <a href="<?= base_url(); ?>reservas" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
+                            <a href="<?= base_url(); ?>reserva" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
                                 Tramitar Reserva
                             </a>
                         </div>
@@ -180,6 +182,13 @@
                 }
             });
         });
+
+        function reloadJs(src) {
+            src = $('script[src$="' + src + '"]').attr("src");
+            $('script[src$="' + src + '"]').remove();
+            $('<script/>').attr('src', src).appendTo('head');
+        }
+
         $('.btnEditar').on('click', function() {
             let rowid = $(this).data('rowid');
             $.ajax({
@@ -194,7 +203,9 @@
                     console.log('carrito/showEditCart', res);
                     $(".cont_edit").html(res.html).fadeIn("slow");
                     myModal.show();
-
+                    // reloadJs(baseURL + "assets/js/main.js");
+                    initialReveal();
+                    initComponents();
                     $('#fecha_dispon').daterangepicker({
                         "singleDatePicker": true,
                         "autoApply": true,

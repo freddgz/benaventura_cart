@@ -21,7 +21,8 @@ class Reserva extends BaseController
      */
     public function index()
     {
-        $this->global['pageTitle'] = 'VenAventura : Inicio';
+        if (empty($this->cart->contents())) redirect("/");
+        $this->global['pageTitle'] = "Reserva : " . PROYECTO;
         $data["regiones"] = $this->ubigeo_model->getRegiones();
         $this->loadViews("reserva", $this->global, $data, NULL);
     }
@@ -63,7 +64,6 @@ class Reserva extends BaseController
 
                 $info["cod_usuario"] = $cod_usuario;
                 $info["cod_verificacion"] = $cod_veri;
-                $info["estado_verif"] = $cod_veri;
                 $info["estado_verif"] = 0;
                 $info["estado"] = 1;
                 $this->usuario_model->insert($info);
@@ -73,13 +73,35 @@ class Reserva extends BaseController
         $recuento_reservacion = $this->reservacion_model->getRecuento();
         $cod_reservacion = $this->util->generar_codigo_aleatorio('RE', 35, $recuento_reservacion);
         $cod_servicio = "";
+        $cod_cliente = "";
         // $servicio = $this->servicio_model->get($cod_se);
         $nro_personas = 0;
         foreach ($this->cart->contents() as $row) {
             $_item = $row["item"];
             $cod_servicio = $row["id"];
             $nro_personas += $_item["personas"];
+            $cod_cliente = $_item["cod_cliente"];
             $costo_servicio = $row["price"];
+
+            $arr_tipopersona = array();
+
+            if ($_item["adultos"] > 0) array_push($arr_tipopersona, "Adulto");
+            if ($_item["adultos_mayores"] > 0) array_push($arr_tipopersona, "Adultos Mayores");
+            if ($_item["ninos_menores"] > 0) array_push($arr_tipopersona, "Niños Mensores");
+            if ($_item["ninos_mayores"] > 0) array_push($arr_tipopersona, "Niños Mayores");
+
+            foreach ($arr_tipopersona as  $tipopersona) {
+                $info = array(
+                    "cod_reservacion" =>  $cod_reservacion,
+                    "tipo_persona" => $tipopersona,
+                    "run" => "",
+                    "nombre" => "",
+                    "apellido" => "",
+                    "edad" => 0,
+                    "costo" => 0,
+                );
+                $this->reservacion_model->insertDetalle($info);
+            }
         }
         $costo_servicio = 0;
         $subtotal = $nro_personas * $costo_servicio;
@@ -88,7 +110,7 @@ class Reserva extends BaseController
         $info = array(
             "cod_reservacion" => $cod_reservacion,
             "cod_servicio" => $cod_servicio,
-            "cod_cliente" => "",
+            "cod_cliente" => $cod_cliente,
             "cod_usuario" => $cod_usuario,
             "fecha_reserva" => date('Y-m-d'),
             "hora_reserva" => date('H:m'),
@@ -101,10 +123,7 @@ class Reserva extends BaseController
             "estado" => 1,
             "fecha_reg" => date('Y-m-d H:m'),
         );
-
         $this->reservacion_model->insert($info);
-
-
         $this->cart->destroy();
         echo json_encode(array(
             "status" => true,

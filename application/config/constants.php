@@ -90,7 +90,7 @@ defined('EXIT__AUTO_MAX')      or define('EXIT__AUTO_MAX', 125); // highest auto
 define('ROLE_ADMIN',                            '1');
 define('ROLE_VENTAS',                             '2');
 
-define('PROYECTO',                             'Agenda');
+define('PROYECTO',                             'VenAventura');
 define('PROYECTO_VERSION',                             '1.0');
 
 
