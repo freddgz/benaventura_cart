@@ -97,7 +97,7 @@ define('PROYECTO_VERSION',                             '1.0');
 define('SEGMENT',                                2);
 define('PAGE_SIZE',                                10);
 define('NUM_ITEMS_BY_PAGE',                                999999);
-define('SERVER_IMG', "http://localhost/jim/benaventura_cart/assets/servicios/");
+define('SERVER_IMG', "http://localhost/benaventura_cart/assets/servicios/");
 
 /**ENCRIPTADO */
 define('METHOD',                                'AES-256-CBC');
