@@ -8,8 +8,8 @@
             <input type="hidden" name="web" id="web" value="<?php echo base_url(); ?>">
             <div class="row y-gap-20">
               <div class="col-12">
-                <h1 class="text-22 fw-500">Bienvenido a VenAventura</h1>
-                <p class="mt-10">A un no eres parte de VenAventura? <a href="<?php echo base_url(); ?>registro" class="text-blue-1">Registrate Gratis</a></p>
+                <h1 class="text-22 fw-500">Bienvenido a <?= PROYECTO ?></h1>
+                <p class="mt-10">A un no eres parte de <?= PROYECTO ?>? <a href="<?php echo base_url(); ?>registro" class="text-blue-1">Registrate Gratis</a></p>
               </div>
 
               <div class="col-12">

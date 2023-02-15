@@ -61,10 +61,11 @@ class Servicio extends CI_Controller
         foreach ($carts as $item) {
             $total +=  $item['subtotal'];
             $recuento++;
-            $output .= " <div class='px-2 px-md-3 py-2 py-md-1'>
-                <div class='media p-2 p-md-3 row'>
-                <div class=' col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3'>
-                   <img class='img-fluid rounded-pill' src='" . SERVER_IMG . "portada/" . $item["image"] . "' alt='Image Description'> 
+            $output .= " <div class='cart-item'>
+                <div class='row p-2 p-md-3'>
+                <div class=' col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3'
+                    style='display: flex; align-items: center; justify-content: center;'>
+                   <img class='img-fluid rounded-pill' style='height: 4rem; object-fit: cover;'  src='" . SERVER_IMG . "portada/" . $item["image"] . "' > 
                 </div>
                 <div class=' col-9 media-body position-relative pl-md-1'>
                     <div class='d-flex justify-content-between align-items-start mb-2 mb-md-3'>
@@ -77,14 +78,6 @@ class Servicio extends CI_Controller
                 </div>
                 </div>
             </div>";
-            // $array[$cart['rowid']] = [
-            //     'id' => $cart['id'],
-            //     'qty' => $cart['qty'],
-            //     'price' => $this->cart->format_number($cart['price']),
-            //     'name' => $cart['name'],
-            //     'subtotal' => $this->cart->format_number($cart['subtotal']),
-            //     'rowid' => $cart['rowid']
-            // ];
         }
 
         $output .= "</div>

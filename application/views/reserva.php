@@ -43,13 +43,14 @@
                 if ($this->session->userdata('isLoggedIn') == null) {
                 ?>
                     <div class="py-15 px-20 rounded-4 text-15 bg-blue-1-05">
-                        <a href="#" class="text-blue-1 fw-500">Inicia sessión o Registrate</a>
+                        <a href="<?= base_url() ?>login" class="text-blue-1 fw-500">Inicia sessión</a> o
+                        <a href="<?= base_url() ?>registro" class="text-blue-1 fw-500">Registrate</a>
                         para que tu reservación sea mas rapido.
                     </div>
 
                     <h2 class="text-22 fw-500 mt-40 md:mt-24">Datos del Reservante</h2>
                     <form id="form_invitado">
-                        <div class="row x-gap-20 y-gap-20 pt-20">
+                        <div class="row x-gap-20 y-gap-20 py-20">
                             <div class="col-md-6">
 
                                 <div class="form-input ">
@@ -132,53 +133,25 @@
 
                             </div>
 
-                            <div class="col-12">
-                                <div class="row y-gap-20 items-center justify-between">
-                                    <div class="col-auto">
-                                        <div class="text-14 text-light-1">
-                                            Al continuar con esta reserva, acepto los <a href="#" class="text-blue-1 fw-500">Términos de uso y la Política de privacidad</a> de VenAventura.
-                                        </div>
-                                    </div>
-                                    <?php if (!empty($this->cart->contents())) : ?>
-                                        <div class="col-auto">
-                                            <button type="submit" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
-                                                SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
-                                            </button>
-                                        </div>
-                                    <?php else : ?>
-                                        <p>cesta vacia</p>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
                     </form>
                     <!-- aqui termina los datos de reserva -->
-                <?php  } else {
-                    $nombre = $this->session->userdata(('nombre')); ?>
-                    <h2 class="text-22 fw-500 mt-40 md:mt-24">Datos del Reservante</h2>
+                <?php  } else {  ?>
+                    <!-- <h2 class="text-22 fw-500 mt-40 md:mt-24">Datos del Reservante</h2>
                     <div class="row x-gap-20 y-gap-20 pt-20">
                         <div class="col-md-6">
                             <p>Nombre: <?= $nombre ?></p>
                         </div>
-                        <?php if (!empty($this->cart->contents())) : ?>
-                            <div class="col-12">
-                                <button type="button" id="btnSiguiente" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
-                                    SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
-                                </button>
-                            </div>
-                        <?php else : ?>
-                            <p>cesta vacia</p>
-                        <?php endif; ?>
-                    </div>
-
+                    </div> -->
                 <?php  } ?>
-                <div class="px-10 mt-30 border-light rounded-4">
-                    <div class="text-20 fw-500 mb-30">Detalle de Reservación</div>
+                <h2 class="text-22 fw-500 mt-20 md:mt-24">Detalle de Reservación</h2>
+
+                <div class="px-10 py-10 mt-20 border-light rounded-4">
                     <?php
                     $total = 0;
                     $igv = 0.18;
                     if (!empty($this->cart->contents())) {
-                        foreach ($this->cart->contents() as $row) {
+                        foreach ($this->cart->contents() as $index => $row) {
                             $subtotal = $row['subtotal'];
                             $item = $row['item'];
                             $total += $subtotal;
@@ -226,7 +199,7 @@
                                 </div>
 
                                 <div class="col-auto">
-                                    <div class="fw-500">$ <?= $subtotal; ?></div>
+                                    <div class="fw-500">$ <?= number_format($subtotal, 3); ?></div>
                                 </div>
                             </div>
                             <div class="border-top-light mt-30 mb-20"></div>
@@ -235,6 +208,31 @@
                     }
                     ?>
 
+                </div>
+
+                <div class="col-12">
+                    <div class="row y-gap-20 items-center justify-between">
+                        <div class="col-auto">
+                            <div class="text-14 text-light-1">
+                                Al continuar con esta reserva, acepto los <a href="#" class="text-blue-1 fw-500">Términos de uso y la Política de privacidad</a> de <?= PROYECTO ?>.
+                            </div>
+                        </div>
+                        <?php
+                        if ($this->session->userdata('isLoggedIn') == null) :
+                        ?>
+                            <div class="col-auto">
+                                <button type="submit" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
+                                    SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
+                                </button>
+                            </div>
+                        <?php else : ?>
+                            <div class="col-auto">
+                                <button type="button" id="btnSiguiente" class="button h-60 px-24 -dark-1 bg-blue-1 text-white">
+                                    SIGUIENTE <div class="icon-arrow-top-right ml-15"></div>
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 

@@ -1778,15 +1778,14 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-12 mb-2">
-                            <a href="javascript:void(1);" class="btn btn-primary align-items-center justify-content-center mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold" id="add_cesta">Añadir a carrito</a>
-                        </div>
-                        <div class="col-lg-12 mb-2">
-                            <a href="javascript:void(1);" class="btn border-primary align-items-center justify-content-center mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold" id="add_reserva">Reservar</a>
-                        </div>
+
 
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(1);" class="btn btn-primary align-items-center justify-content-center mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold" id="add_cesta">Añadir a carrito</a>
+                <button type="button" class="btn border-secondary align-items-center justify-content-center mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold" data-bs-dismiss="modal">Cancelar</a>
             </div>
         </div>
     </div>

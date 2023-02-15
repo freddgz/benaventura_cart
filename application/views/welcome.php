@@ -220,7 +220,12 @@
             </div>
             <div class="citiesCard__content px-30 py-30">
               <h4 class="text-26 fw-600 text-white"><?= $row->nombre; ?></h4>
-              <div class="text-15 text-white"><?= $row->cantidad_aventura ?> servicios</div>
+              <?php if ($row->cantidad_aventura > 0) : ?>
+                <div class="text-15 text-white"><?= $row->cantidad_aventura ?> Aventuras</div>
+              <?php endif ?>
+              <?php if ($row->cantidad_tour > 0) : ?>
+                <div class="text-15 text-white"><?= $row->cantidad_tour ?> Tours</div>
+              <?php endif ?>
             </div>
           </a>
 

@@ -20,10 +20,6 @@
   <link rel="stylesheet" href="<?= base_url() ?>assets/pluging/daterangepicker-master/daterangepicker.css">
   <link rel="stylesheet" href="<?= base_url() ?>assets/pluging/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="<?= base_url() ?>assets/pluging/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
-
-
-
-
   <!-- JavaScript -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -61,7 +57,7 @@
         </div>
       </div>
 
-      <div class="preloader__title">VenAventura</div>
+      <div class="preloader__title"><?= PROYECTO ?></div>
     </div>
 
     <header data-add-bg="" class="header bg-white js-header" data-x="header" data-x-toggle="is-menu-opened">
@@ -133,7 +129,7 @@
 
               <div class="d-flex items-center ml-20 is-menu-opened-hide md:d-none">
                 <a href="login.html" class="button px-30 fw-400 text-14 -blue-1 bg-blue-1 h-50 text-white">AGENCIAS
-                  VENAVENTURA</a>
+                  <?= PROYECTO ?></a>
                 <?php
                 if ($this->session->userdata('isLoggedIn') !== null) {
                   $nombre = $this->session->userdata(('nombre'));
@@ -185,16 +181,18 @@
                         foreach ($this->cart->contents() as $item) :
                           $precio = $item['subtotal'];
                           $total += $precio;
+                          $rowid = $item['rowid'];
                         ?>
-                          <div class="px-2 px-md-3 py-2 py-md-1">
-                            <div class="media p-2 p-md-3 row">
-                              <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3">
-                                <img class="img-fluid rounded-pill" src="<?= SERVER_IMG; ?>portada/<?= $item['image']; ?>" alt="Image Description">
+                          <div class="cart-item">
+                            <div class="row p-2 p-md-3">
+                              <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3"
+                              style="display: flex; align-items: center; justify-content: center;">
+                                <img class="rounded-pill" style="height: 4rem; object-fit: cover;" src="<?= SERVER_IMG; ?>portada/<?= $item['image']; ?>">
                               </div>
                               <div class=" col-9 media-body position-relative pl-md-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
+                                <div class="d-flex justify-content-between align-items-start">
                                   <span class="d-block text-dark font-weight-bold"><?= ucfirst($item['name']); ?></span>
-                                  <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
+                                  <button type="button" data-rowid="<?= $rowid ?>" class="cart-delete-item position-md-absolute right-0 ml-2" aria-label="Close">
                                     <i class="icon-trash"></i>
                                   </button>
                                 </div>
@@ -263,15 +261,10 @@
                 </style>
                 <ul class="dropdown-menu cart_cest" aria-labelledby="dropdownMenuButton1">
                   <div class="card cont-cesta " style="border: none;">
-                    <!-- Header -->
                     <div class="card-header py-3 px-5 bg-white">
                       <span class="font-weight-semi-bold">Tu Cesta</span>
                     </div>
-                    <!-- End Header -->
-
                     <?php if (!empty($this->cart->contents())) : ?>
-
-                      <!-- Body -->
                       <div class="card-body p-0">
                         <?php
                         $total = 0;
@@ -279,26 +272,25 @@
                           $precio = $item['subtotal'];
                           $total += $precio;
                         ?>
-                          <div class="px-2 px-md-3 py-2 py-md-1">
-                            <div class="media p-2 p-md-3 row">
-                              <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3">
-                                <!-- <img class="img-fluid rounded-pill" src="<?php echo SERVER_IMG; ?>portada/<?php echo $ces['img_portada']; ?>" alt="Image Description"> -->
+                          <div class="cart-item">
+                            <div class="row p-2 p-md-3">
+                              <div class=" col-3 u-avatar u-lg-avatar-md mr-2 mr-md-3"
+                              style="display: flex; align-items: center; justify-content: center;">
+                                <img class="rounded-pill" style="height: 4rem; object-fit: cover;" src="<?= SERVER_IMG; ?>portada/<?= $item['image']; ?>">
                               </div>
                               <div class=" col-9 media-body position-relative pl-md-1">
                                 <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
-                                  <span class="d-block text-dark font-weight-bold"><?php echo ucfirst($item['name']); ?></span>
+                                  <span class="d-block text-dark font-weight-bold"><?= ucfirst($item['name']); ?></span>
                                   <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
                                     <i class="icon-trash"></i>
                                   </button>
                                 </div>
-                                <span class="d-block text-gray-1">Precio $ <?php echo $precio; ?> </span>
+                                <span class="d-block text-gray-1">Precio $ <?= $precio; ?> </span>
                               </div>
                             </div>
                           </div>
                         <?php endforeach; ?>
                       </div>
-                      <!-- End Body -->
-
                       <!-- Footer -->
                       <div class="card-footer border-0 p-3 px-md-5 py-md-4">
                         <div class="mb-4 pb-md-1">
@@ -331,4 +323,21 @@
     <script type="text/javascript">
       let baseURL = "<?= base_url() ?>";
       let gisLoggedIn = <?= ($this->session->userdata('isLoggedIn') !== null) ? "true" : "false" ?>;
+    </script>
+    <script>
+      $(".cart-delete-item").on("click", function() {
+        let rowid = $(this).data('rowid');
+        console.log('carrito/deleteOneItemInCart', rowid);
+        $.ajax({
+          type: 'POST',
+          url: baseURL + 'carrito/deleteOneItemInCart',
+          dataType: 'json',
+          data: {
+            rowid: rowid,
+          },
+          success: function(res) {
+            location.reload();
+          }
+        });
+      });
     </script>

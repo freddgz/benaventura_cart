@@ -17,32 +17,6 @@
             </div>
           </div>
 
-          <div class="row x-gap-20 y-gap-15 pt-60">
-            <div class="col-12">
-              <h5 class="text-16 fw-500">Your all-in-one travel app</h5>
-            </div>
-
-            <div class="col-auto col-lg-6">
-              <div class="d-flex items-center px-20 py-10 rounded-4 bg-white-10">
-                <div class="icon-apple text-24"></div>
-                <div class="ml-20">
-                  <div class="text-14 lh-14">Download on the</div>
-                  <div class="text-15 lh-14 fw-500">Apple Store</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-auto col-lg-6">
-              <div class="d-flex items-center px-20 py-10 rounded-4 bg-white-10">
-                <div class="icon-play-market text-24"></div>
-                <div class="ml-20">
-                  <div class="text-14 lh-14">Get in on</div>
-                  <div class="text-15 lh-14 fw-500">Google Play</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div class="mt-60">
             <h5 class="text-16 fw-500 mb-10">Síguenos en las redes sociales</h5>
 
