@@ -36,58 +36,27 @@ if ($total >= 1) {
                         <div class="sidebar__item -no-border">
                             <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
                             <div class="form-input ">
-                                <input type="text" id="filtro" name="filtro" value="<?= $filtro['search'] ?>">
+                                <input type="text" id="filtro" name="filtro" value="">
                                 <label class="lh-1 text-16 text-light-1">Filtro</label>
                             </div>
                         </div>
                         <div class="sidebar__item -no-border">
                             <h5 class="text-18 fw-500 mb-10">Categorias</h5>
-                            <input type="hidden" name="cod_categoria" id="cod_categoria" value="<?= $categoria->cod_categoria ?>">
+                            <input type="hidden" name="cod_destino" id="cod_destino" value="<?= $destino->id_region ?>">
                             <div class="sidebar-checkbox">
                                 <?php
-                                foreach ($subcategorias as $sub) {
+                                foreach ($categorias as $sub) {
                                 ?>
                                     <div class="row y-gap-10 items-center justify-between">
                                         <div class="col-auto">
                                             <div class="d-flex items-center">
                                                 <div class="form-checkbox ">
-                                                    <input type="checkbox" class="common_selector subcategoria" value="<?= $sub->cod_sub_cate; ?>">
+                                                    <input type="checkbox" class="common_selector categoria" value="<?= $sub->cod_categoria; ?>">
                                                     <div class="form-checkbox__mark">
                                                         <div class="form-checkbox__icon icon-check"></div>
                                                     </div>
                                                 </div>
                                                 <div class="text-15 ml-10"><?= $sub->nombre; ?></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="text-15 text-light-1">
-                                                <?php
-                                                //echo print_r(array_search($cod_sub, $subcategorias));
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php
-                                }
-                                ?>
-                            </div>
-                        </div>
-                        <div class="sidebar__item ">
-                            <h5 class="text-18 fw-500 mb-10">Destinos</h5>
-                            <div class="sidebar-checkbox">
-                                <?php
-                                foreach ($destinos as $row) {
-                                ?>
-                                    <div class="row y-gap-10 items-center justify-between">
-                                        <div class="col-auto">
-                                            <div class="d-flex items-center">
-                                                <div class="form-checkbox ">
-                                                    <input type="checkbox" class="common_selector destinos" value="<?= $row->id_region; ?>">
-                                                    <div class="form-checkbox__mark">
-                                                        <div class="form-checkbox__icon icon-check"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="text-15 ml-10"><?= $row->nombre; ?></div>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -197,58 +166,26 @@ if ($total >= 1) {
                             <div class="sidebar__item -no-border">
                                 <!-- <h5 class="text-18 fw-500 mb-10">Filtro</h5> -->
                                 <div class="form-input ">
-                                    <input type="text" id="filtro" name="filtro" value="<?= $filtro['search'] ?>">
+                                    <input type="text" id="filtro" name="filtro" value="">
                                     <label class="lh-1 text-16 text-light-1">Filtro</label>
                                 </div>
                             </div>
                             <div class="sidebar__item -no-border">
                                 <h5 class="text-18 fw-500 mb-10">Categorias</h5>
-                                <input type="hidden" name="cod_categoria" id="cod_categoria" value="<?= $categoria->cod_categoria ?>">
                                 <div class="sidebar-checkbox">
                                     <?php
-                                    foreach ($subcategorias as $sub) {
+                                    foreach ($categorias as $sub) {
                                     ?>
                                         <div class="row y-gap-10 items-center justify-between">
                                             <div class="col-auto">
                                                 <div class="d-flex items-center">
                                                     <div class="form-checkbox ">
-                                                        <input type="checkbox" class="common_selector subcategoria" value="<?= $sub->cod_sub_cate; ?>">
+                                                        <input type="checkbox" class="common_selector categoria" value="<?= $sub->cod_categoria; ?>">
                                                         <div class="form-checkbox__mark">
                                                             <div class="form-checkbox__icon icon-check"></div>
                                                         </div>
                                                     </div>
                                                     <div class="text-15 ml-10"><?= $sub->nombre; ?></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <div class="text-15 text-light-1">
-                                                    <?php
-                                                    //echo print_r(array_search($cod_sub, $subcategorias));
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                            <div class="sidebar__item ">
-                                <h5 class="text-18 fw-500 mb-10">Destinos</h5>
-                                <div class="sidebar-checkbox">
-                                    <?php
-                                    foreach ($destinos as $row) {
-                                    ?>
-                                        <div class="row y-gap-10 items-center justify-between">
-                                            <div class="col-auto">
-                                                <div class="d-flex items-center">
-                                                    <div class="form-checkbox ">
-                                                        <input type="checkbox" class="common_selector destinos" value="<?= $row->id_region; ?>">
-                                                        <div class="form-checkbox__mark">
-                                                            <div class="form-checkbox__icon icon-check"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-15 ml-10"><?= $row->nombre; ?></div>
                                                 </div>
                                             </div>
                                             <div class="col-auto">
@@ -365,18 +302,6 @@ if ($total >= 1) {
 <script>
     $(document).ready(function() {
 
-        // let sucbategoria_filtro = '<?= $filtro["subcategoria"] ?>';
-        // console.log('sucbategoria_filtro', sucbategoria_filtro);
-        document.querySelectorAll(".subcategoria").forEach((el, idx) => {
-            if (el.value == '<?= $filtro["subcategoria"] ?>')
-                el.checked = true;
-            // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
-        });
-        document.querySelectorAll(".destinos").forEach((el, idx) => {
-            if (el.value == '<?= $filtro["destino"] ?>')
-                el.checked = true;
-            // console.log(`${idx} Element ${el.tagName} with ID #${el.id} value: ${el.value}`);
-        });
         filter_data();
 
         function filter_data() {
@@ -386,23 +311,21 @@ if ($total >= 1) {
             var filtro = $('#filtro').val();
             var precio_minimo = $('.hidden_minimum_price').val();
             var precio_maximo = $('.hidden_maximum_price').val();
-            let cod_categoria = $("#cod_categoria").val();
-            let cod_sub_categoria = get_filter('subcategoria');
+            let cod_destino = $("#cod_destino").val();
+            let cod_categoria = get_filter('categoria');
             let duraciones = get_filter('duracion');
-            let destinos = get_filter('destinos');
             // var ram = get_filter('ram');
             // var storage = get_filter('storage');
             $.ajax({
-                url: `${baseURL}ajax/Servicio/getItems`,
+                url: `${baseURL}ajax/Servicio/getItems_Destino`,
                 method: "POST",
                 data: {
                     // action: action,
                     precio_minimo: precio_minimo,
                     precio_maximo: precio_maximo,
-                    cod_sub_categoria: cod_sub_categoria,
                     cod_categoria: cod_categoria,
+                    cod_destino: cod_destino,
                     duraciones: duraciones,
-                    destinos: destinos,
                     texto: filtro,
                     // storage: storage
                 },

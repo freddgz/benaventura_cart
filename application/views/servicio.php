@@ -1722,7 +1722,7 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
             </div>
             <div class="card  p-2 ">
                 <div class="row align-items-center">
-                    <div class="col-lg-8 col-xl-8 col-md-6 col-sm-6 col-6 text-left">
+                    <div class="col-12 col-lg-8 col-xl-8 text-left">
 
                         <div class="d-block">
                             <div class="d-block d-md-flex flex-horizontal-center text-gray-1 mb-2 mb-xl-0">
@@ -1760,7 +1760,7 @@ $fecha_fin = date("Y-m-d", strtotime($fecha_inicio . "+ 1 year"));
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-xl-4 col-md-6 col-sm-6 col-6 border-left text-center">
+                    <div class="border-left col-12 col-lg-4 col-xl-4 text-right">
                         <div class="">
                             <div class="">
                                 <div class="p-4">

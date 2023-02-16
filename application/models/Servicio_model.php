@@ -72,6 +72,48 @@ class Servicio_model extends CI_Model
          ";
         return (int) $this->db->query($query)->row()->total;
     }
+
+
+    function getAll_destino($cod_destino, $cod_categoria, $precio_minimo, $precio_maximo, $duraciones, $start, $texto)
+    {
+        $array_duracion = [];
+        foreach ($duraciones as $nro)
+            array_push($array_duracion, "d.duracion between " . ARRAY_DURACION[$nro]["desde"] . " and " . ARRAY_DURACION[$nro]["hasta"]);
+        $query_duracion = implode(" OR ", $array_duracion);
+        $query = "SELECT 
+                * 
+                FROM servicios AS s
+                inner join detalles_servicio AS d on s.cod_servicio=d.cod_servicio
+                inner join geo_servicios g on g.cod_servicio = s.cod_servicio
+                WHERE  g.id_region='$cod_destino' ";
+        // WHERE s.cod_servicio=d.cod_servicio ";
+        if ($texto !== "")
+            $query .= " AND s.titulo like '%$texto%' ";
+        if ($cod_categoria !== "")
+            $query .= " AND s.cod_categoria in ('$cod_categoria') ";
+        if (sizeof($duraciones) > 0)
+            $query .= " AND ($query_duracion)";
+        // $query .= " AND s.cod_categoria='$cod_categoria'
+        $query .= " 
+                AND s.costo between $precio_minimo and $precio_maximo
+                ORDER BY s.fecha_reg ASC 
+                LIMIT " . $start . "," . NUM_ITEMS_BY_PAGE;
+        // echo $query;
+        $result = $this->db->query($query)->result();
+        return array("data" => $result, "query" => $query);
+    }
+    function getAllCleanPorRegion($id_region, $start)
+    {
+        $query = "SELECT 
+                * 
+                FROM servicios AS s
+                inner join detalles_servicio AS d on s.cod_servicio=d.cod_servicio
+                inner join geo_servicios g on g.cod_servicio = s.cod_servicio
+                WHERE g.id_region='$id_region'
+                ORDER BY s.fecha_reg ASC 
+                LIMIT " . $start . "," . NUM_ITEMS_BY_PAGE;
+        return $this->db->query($query)->result();
+    }
     function getTop()
     {
         $query = "SELECT

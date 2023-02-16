@@ -6,6 +6,7 @@ $route['404_override'] = 'error';
 
 /*********** USER DEFINED ROUTES *******************/
 
+$route['destino/(:any)'] = 'servicio/destino/$1';
 $route['categoria/(:any)'] = 'servicio/categoria/$1';
 $route['detalleTour/(:any)'] = 'servicio/servicio/$1';
 $route['loginMe'] = 'login/loginMe';

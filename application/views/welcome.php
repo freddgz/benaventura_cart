@@ -214,7 +214,7 @@
 
       ?>
         <div data-anim-child="slide-up delay-<?= $de; ?>" class="col-xl-<?= $amplitud; ?> col-md-4 col-sm-6">
-          <a href="<?= base_url() . "categoria/cat_aventura?destino=" . $row->cod_destino; ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
+          <a href="<?= base_url() . "destino/" . strtolower($row->nombre); ?>" class="citiesCard -type-3 d-block h-full rounded-4 ">
             <div class="citiesCard__image ratio ratio-1:1">
               <img class="col-12 js-lazy" src="#" data-src="<?= SERVER_IMG ?>destinos/<?= $row->imagen; ?>" alt="image">
             </div>

@@ -27,16 +27,16 @@ class Servicio extends BaseController
     {
         // echo "cod_categoria: $cod_categoria";
         // echo "id_region: " . $_GET["id_region"];
+        $this->global['pageTitle'] = "Servicios : " . PROYECTO;
+
         $s = isset($_GET["search"]) ? $_GET["search"] : "";
         $cod_destino =   ""; //cod_destino
-
-        $this->global['pageTitle'] = "Servicios : " . PROYECTO;
-        if (isset($_GET["destino"])) {
-            $destino = $this->destino_model->get($_GET["destino"]);
-            $data["destino"] = $destino;
-            $cod_destino = $destino->id_region;
-            $this->global['pageTitle'] = $destino->nombre . " : " . PROYECTO;
-        }
+        // if (isset($_GET["destino"])) {
+        //     $destino = $this->destino_model->get($_GET["destino"]);
+        //     $data["destino"] = $destino;
+        //     $cod_destino = $destino->id_region;
+        //     $this->global['pageTitle'] = $destino->nombre . " : " . PROYECTO;
+        // }
         // exit();
         $filtro_subcategoria = "";
         $filtro_categoria = "";
@@ -85,9 +85,47 @@ class Servicio extends BaseController
         $this->global['pageTitle'] = $servicio->titulo . " : " . PROYECTO;
         $this->loadViews("servicio", $this->global, $data, NULL);
     }
-    public function destino($cod_destino)
+    public function destino($destino_nombre)
     {
-        $this->global['pageTitle'] = "Destino : " . PROYECTO;
-        $this->loadViews("servicio", $this->global, $data, NULL);
+
+        // echo "id_region: " . $_GET["id_region"];
+        // $s = isset($_GET["search"]) ? $_GET["search"] : "";
+        $cod_destino =   ""; //cod_destino
+
+        $this->global['pageTitle'] = $destino_nombre . PROYECTO;
+        // if (isset($_GET["destino"])) {
+        //     $destino = $this->destino_model->get($_GET["destino"]);
+        //     $data["destino"] = $destino;
+        //     $cod_destino = $destino->id_region;
+        //     $this->global['pageTitle'] = $destino->nombre . " : " . PROYECTO;
+        // }
+        // exit();
+        // $filtro_subcategoria = "";
+        // $filtro_categoria = "";
+        // $cod_categoria = strtolower($cod_categoria);
+        // if (strpos($cod_categoria, PREFIX_CAT) !== false) {
+        //filtro todos
+        $destino = $this->destino_model->get_nombre($destino_nombre);
+        $data["destino"] = $destino;
+
+        // } else {
+        //     $subcategoria = $this->categoria_model->getSubcategoria_Nombre($cod_categoria);
+        //     $data["categoria"] = $this->categoria_model->get($subcategoria->cod_categoria);
+        //     $data["subcategorias"] = $this->categoria_model->getAll_Subcateoria_IdCategoria($subcategoria->cod_categoria);
+        //     $filtro_categoria = $subcategoria->cod_categoria;
+        //     $filtro_subcategoria = $subcategoria->cod_sub_cate;
+        // }
+        // $filtros = array();
+        // $filtros["categoria"] = $filtro_categoria;
+        // $filtros["destino"] = $cod_destino;
+        // $data["filtro"] = $filtros;
+        // $data["destinos"] = $this->servicio_model->getTop();
+        $start = 0;
+        $servicios = $this->servicio_model->getAllCleanPorRegion($destino->id_region, $start);
+        $data["servicios"] = $servicios;
+        $data["duraciones"] = ARRAY_DURACION;
+        $data["categorias"] = $this->categoria_model->getAll_ConServicio();
+        $data["total"] =  sizeof($servicios);
+        $this->loadViews("servicios_filtro_destino", $this->global, $data, NULL);
     }
 }

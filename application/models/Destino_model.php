@@ -42,4 +42,16 @@ class Destino_model extends CI_Model
             return $result->row();
         }
     }
+    function get_nombre($nombre)
+    {
+        $query = "SELECT
+                *
+                FROM
+                destinos
+                WHERE LOWER(nombre) = '$nombre'";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            return $result->row();
+        }
+    }
 }
